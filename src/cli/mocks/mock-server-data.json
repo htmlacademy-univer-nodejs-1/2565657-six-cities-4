@@ -1,0 +1,120 @@
+{
+  "api": {
+    "titles": [
+      "Sun-Drenched Studio by the River",
+      "Rustic Cabin in the Woods",
+      "Victorian Townhouse with Garden",
+      "Modern Apartment with City View",
+      "Beachfront Bungalow with Ocean Access",
+      "Spacious Loft in a Converted Warehouse",
+      "Cozy Cottage in the Countryside",
+      "Historic Mansion with Private Park"
+    ],
+    "descriptions": [
+      "Enjoy natural light and stunning river views from this modern studio apartment.",
+      "Escape to nature in this charming cabin surrounded by forest.",
+      "Experience the elegance of a bygone era in this beautifully preserved townhouse.",
+      "A sleek and stylish apartment with breathtaking city views.",
+      "Relax on the beach just steps from your private bungalow.",
+      "Creative living space in a historic warehouse building.",
+      "A peaceful retreat in the heart of the countryside.",
+      "Live like royalty in this grand mansion with extensive grounds."
+    ],
+    "cities": [
+      "London",
+      "Berlin",
+      "Rome",
+      "Barcelona",
+      "Prague",
+      "Vienna"
+    ],
+    "images": [
+      "image-01.jpg",
+      "image-02.png",
+      "image-03.webp",
+      "image-04.svg",
+      "image-05.jpg",
+      "image-06.png",
+      "image-07.webp",
+      "image-08.svg",
+      "picture-01.jpg",
+      "picture-02.png",
+      "picture-03.webp",
+      "picture-04.svg",
+      "picture-05.jpg",
+      "picture-06.png",
+      "picture-07.webp",
+      "picture-08.svg",
+      "picture-09.jpg",
+      "picture-10.png"
+    ],
+    "types": [
+      "studio",
+      "cabin",
+      "townhouse",
+      "bungalow",
+      "loft",
+      "cottage",
+      "mansion"
+    ],
+    "conveniences": [
+      "Wi-Fi",
+      "Kitchen",
+      "Parking",
+      "Pet-friendly",
+      "Fireplace",
+      "Balcony",
+      "Swimming pool"
+    ],
+    "names": [
+      "Liam",
+      "Olivia",
+      "Noah",
+      "Emma",
+      "Oliver",
+      "Ava",
+      "William",
+      "Sophia",
+      "James",
+      "Isabella"
+    ],
+    "emails": [
+      "liam@mail.com",
+      "olivia@mail.com",
+      "noah@mail.com",
+      "emma@mail.com",
+      "oliver@mail.com",
+      "ava@mail.com",
+      "william@mail.com",
+      "sophia@mail.com",
+      "james@mail.com",
+      "isabella@mail.com"
+    ],
+    "avatarImages": [
+      "profile-1.png",
+      "profile-2.jpg",
+      "profile-3.webp",
+      "profile-4.svg",
+      "profile-5.png",
+      "profile-6.jpg",
+      "profile-7.webp",
+      "profile-8.svg",
+      "profile-9.png",
+      "profile-10.jpg",
+      "profile-11.webp",
+      "profile-12.svg"
+    ],
+    "passwords": [
+      "P@$$wOrd1",
+      "S3cur3P@$$",
+      "C0mpl3xP@$$wOrd",
+      "MyStr0ngP@$$wOrd",
+      "UnGu3$$@bl3",
+      "S3cr3tKey99",
+      "Pr0t3ct3dAcc3$$",
+      "D0ntGu3$$M3!",
+      "H@rdT0Cr@ck",
+      "1mP0$$1bl3T0Kn0w"
+    ]
+  }
+}

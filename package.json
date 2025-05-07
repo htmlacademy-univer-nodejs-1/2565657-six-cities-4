@@ -9,21 +9,26 @@
   ],
   "main": "main.js",
   "scripts": {
-    "start": "npm run build && node ./dist/main.js",
+    "start": "npm run build && node ./dist/main.rest.js",
+    "start:dev": "npm run ts ./src/main.rest.ts | pino-pretty --colorize --translateTime SYS:standard",
     "build": "npm run clean && npm run compile",
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
-    "ts": "ts-node"
+    "ts": "ts-node",
+    "start:mock-server": "json-server ./src/cli/mocks/mock-server-data.json --port 3000",
+    "cli": "ts-node-esm src/main.cli.ts"
   },
   "devDependencies": {
-    "@types/node": "^18.17.17",
+    "@types/convict": "^6.1.6",
+    "@types/convict-format-with-validator": "^6.0.5",
+    "@types/node": "18.17.17",
     "@typescript-eslint/eslint-plugin": "6.7.0",
     "@typescript-eslint/parser": "6.7.0",
-    "chalk": "^5.4.1",
-    "commander": "^13.1.0",
     "eslint": "8.49.0",
     "eslint-config-htmlacademy": "9.1.1",
+    "got": "^14.4.6",
+    "json-server": "^1.0.0-beta.3",
     "rimraf": "5.0.1",
     "ts-node": "10.9.1",
     "typescript": "5.2.2"
@@ -32,5 +37,20 @@
   "engines": {
     "node": "^18.0.0",
     "npm": ">=8"
+  },
+  "dependencies": {
+    "@typegoose/typegoose": "^12.15.0",
+    "chalk": "^5.4.1",
+    "convict": "^6.2.4",
+    "convict-format-with-validator": "^6.2.0",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.5.0",
+    "inversify": "^6.0.2",
+    "mongoose": "^8.14.1",
+    "mongosh": "^2.5.0",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
+    "reflect-metadata": "^0.2.2",
+    "tslib": "^2.8.1"
   }
 }
