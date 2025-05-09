@@ -1,9 +1,9 @@
-import {Rating} from '../enums/rating.js';
-import {User} from './user.js';
+import { User } from './user.js';
+import { Rating } from '../enums/index.js';
 
 export type Comment = {
-  text: string,
-  publicationDate: string,
-  rating: Rating
-  author: User
-}
+  text: string;
+  publicationDate: string;
+  rating: Rating;
+  author: User;
+};

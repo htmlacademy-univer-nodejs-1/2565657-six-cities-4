@@ -11,3 +11,17 @@ plugins:
 extends:
   - "plugin:@typescript-eslint/recommended"
   - "htmlacademy/node"
+  - "plugin:import/errors"
+  - "plugin:import/warnings"
+rules:
+  import/first: "error"
+  import/newline-after-import:
+    - "error"
+    - { "count": 1 }
+  import/order:
+    - "error"
+    - groups:
+        - ["external", "internal"]
+      newlines-between: "always"
+      alphabetize: { order: 'asc', caseInsensitive: true }
+  import/no-unresolved: "off"

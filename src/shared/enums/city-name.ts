@@ -4,5 +4,5 @@ export enum CityName {
   Brussels,
   Amsterdam,
   Hamburg,
-  Dusseldorf
+  Dusseldorf,
 }

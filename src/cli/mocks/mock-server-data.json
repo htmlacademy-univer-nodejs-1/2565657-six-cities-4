@@ -20,14 +20,7 @@
       "A peaceful retreat in the heart of the countryside.",
       "Live like royalty in this grand mansion with extensive grounds."
     ],
-    "cities": [
-      "London",
-      "Berlin",
-      "Rome",
-      "Barcelona",
-      "Prague",
-      "Vienna"
-    ],
+    "cities": ["London", "Berlin", "Rome", "Barcelona", "Prague", "Vienna"],
     "images": [
       "image-01.jpg",
       "image-02.png",

@@ -1,14 +1,8 @@
-import {Location, Offer} from '../types/index.js';
-import {PlaceType} from '../enums/place-type.js';
-import {Convenience} from '../enums/convenience.js';
-import {generateCity} from './generate-city.js';
-import {generateUser} from './generate-user.js';
-import {Rating} from '../enums/rating.js';
-import {RoomCount} from '../enums/room-count.js';
-import {GuestCount} from '../enums/guest-count.js';
+import { generateCity , generateUser } from './index.js';
+import { PlaceType , Convenience , Rating , RoomCount , GuestCount } from '../enums/index.js';
+import { Location , Offer } from '../types/index.js';
 
-export function
-generateOffer(offerData: string): Offer {
+export function generateOffer(offerData: string): Offer {
   const [
     title,
     description,
@@ -33,7 +27,7 @@ generateOffer(offerData: string): Offer {
     userType,
     commentsCount,
     latitude,
-    longitude
+    longitude,
   ] = offerData.replace('\n', '').split('\t');
 
   const city = generateCity(cityName, cityLatitude, cityLongitude);
@@ -43,7 +37,7 @@ generateOffer(offerData: string): Offer {
     email,
     avatarImage,
     password,
-    userType
+    userType,
   );
 
   const location: Location = {
@@ -68,14 +62,13 @@ generateOffer(offerData: string): Offer {
     conveniences: conveniences.split(';') as Convenience[],
     offerAuthor,
     commentCount: Number(commentsCount),
-    location
+    location,
   };
 }
 
-
 function getRating(name: string): Rating {
   const cityNameKey = (Object.keys(Rating) as (keyof typeof Rating)[]).find(
-    (key) => key === name
+    (key) => key === name,
   );
 
   if (cityNameKey) {
@@ -85,11 +78,10 @@ function getRating(name: string): Rating {
   }
 }
 
-
 function getRoomCount(name: string): RoomCount {
-  const cityNameKey = (Object.keys(RoomCount) as (keyof typeof RoomCount)[]).find(
-    (key) => key === name
-  );
+  const cityNameKey = (
+    Object.keys(RoomCount) as (keyof typeof RoomCount)[]
+  ).find((key) => key === name);
 
   if (cityNameKey) {
     return RoomCount[cityNameKey];
@@ -99,9 +91,9 @@ function getRoomCount(name: string): RoomCount {
 }
 
 function getGuestCount(name: string): GuestCount {
-  const cityNameKey = (Object.keys(GuestCount) as (keyof typeof GuestCount)[]).find(
-    (key) => key === name
-  );
+  const cityNameKey = (
+    Object.keys(GuestCount) as (keyof typeof GuestCount)[]
+  ).find((key) => key === name);
 
   if (cityNameKey) {
     return GuestCount[cityNameKey];

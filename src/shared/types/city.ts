@@ -1,7 +1,7 @@
-import {CityName} from '../enums/city-name.js';
-import {Location} from './location.js';
+import { Location } from './location.js';
+import { CityName } from '../enums/index.js';
 
 export type City = {
-  name: CityName,
-  location: Location
-}
+  name: CityName;
+  location: Location;
+};
