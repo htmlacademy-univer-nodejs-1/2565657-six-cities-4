@@ -1,6 +1,10 @@
 import { Command } from './command.interface.js';
+import {
+  generateOffer,
+  getErrorMessage,
+} from '../../../shared/helpers/index.js';
 import { TSVFileReader } from '../../../shared/libs/file-reader/index.js';
-import { generateOffer, getErrorMessage } from '../../../shared/helpers/index.js';
+
 export class ImportCommand implements Command {
   public getName(): string {
     return '--import';
@@ -30,4 +34,3 @@ export class ImportCommand implements Command {
     }
   }
 }
-

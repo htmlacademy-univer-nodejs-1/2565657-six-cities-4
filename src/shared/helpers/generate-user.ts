@@ -1,12 +1,12 @@
-import {User} from '../types/index.js';
-import {UserType} from '../enums/user-type.js';
+import { UserType } from '../enums/index.js';
+import { User } from '../types/index.js';
 
 export const generateUser = (
   name: string,
   email: string,
   avatarImage: string,
   password: string,
-  userType: string
+  userType: string,
 ): User => ({
   name,
   email,
@@ -17,7 +17,7 @@ export const generateUser = (
 
 function getUserType(name: string): UserType {
   const cityNameKey = (Object.keys(UserType) as (keyof typeof UserType)[]).find(
-    (key) => key === name
+    (key) => key === name,
   );
 
   if (cityNameKey) {
