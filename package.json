@@ -31,6 +31,7 @@
     "eslint-plugin-import": "^2.31.0",
     "got": "^14.4.6",
     "json-server": "^1.0.0-beta.3",
+    "pino-pretty": "^13.0.0",
     "rimraf": "5.0.1",
     "ts-node": "10.9.1",
     "typescript": "5.2.2"
@@ -51,7 +52,6 @@
     "mongoose": "^8.14.1",
     "mongosh": "^2.5.0",
     "pino": "^9.6.0",
-    "pino-pretty": "^13.0.0",
     "reflect-metadata": "^0.2.2",
     "tslib": "^2.8.1"
   }
