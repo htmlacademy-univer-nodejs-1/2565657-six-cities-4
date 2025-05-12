@@ -3,6 +3,7 @@ import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@type
 import { CITIES } from './index.js';
 import { Convenience, PlaceType } from '../../../enums/index.js';
 import { City, Location } from '../../../types/index.js';
+import { CommentEntity } from '../comment/index.js';
 import { UserEntity } from '../user/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -51,7 +52,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     required: true,
     default: Date.now
   })
-  public postDate!: Date;
+  public publicationDate!: Date;
 
   @prop({
     required: true,
@@ -63,7 +64,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     required: true,
     match: [/\.(jpg|png)$/i, 'Автарка должна быть в формате JPEG или PNG']
   })
-  public previewImage!: string;
+  public preview!: string;
 
   @prop({
     required: true,
@@ -99,14 +100,14 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     min: 1,
     max: 8
   })
-  public rooms!: number;
+  public roomCount!: number;
 
   @prop({
     required: true,
     min: 1,
     max: 10
   })
-  public guests!: number;
+  public guestCount!: number;
 
   @prop({
     required: true,
@@ -124,19 +125,19 @@ export class OfferEntity extends defaultClasses.TimeStamps {
       message: 'Такое "Удобство" отсутствует'
     }
   })
-  public amenities!: Convenience[];
+  public conveniences!: Convenience[];
 
   @prop({
     required: true,
     ref: UserEntity
   })
-  public authorId!: Ref<UserEntity>;
+  public offerAuthor!: Ref<UserEntity>;
 
   @prop({
     required: true,
     default: 0
   })
-  public commentsCount!: number;
+  public commentCount!: number;
 
   @prop({
     required: true,
@@ -149,7 +150,15 @@ export class OfferEntity extends defaultClasses.TimeStamps {
       message: 'Неправильное местоположение'
     }
   })
-  public coordinates!: Location;
+  public location!: Location;
+
+  @prop({
+    ref: 'CommentEntity',
+    foreignField: 'offerId',
+    localField: '_id',
+    justOne: false
+  })
+  public comments?: Ref<CommentEntity>[];
 }
 
 export const OfferModel = getModelForClass(OfferEntity);
