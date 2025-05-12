@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 
-import { createApplicationContainer } from './rest/container.js';
-import { Application } from './rest/index.js';
+import { createApplicationContainer, Application } from './rest/index.js';
 import { ComponentName } from './shared/enums/index.js';
+import { createCommentContainer } from './shared/libs/modules/comment/index.js';
 import { createOfferContainer } from './shared/libs/modules/offer/index.js';
 import { createUserContainer } from './shared/libs/modules/user/index.js';
 
@@ -12,6 +12,7 @@ async function bootstrap() {
     createApplicationContainer(),
     createUserContainer(),
     createOfferContainer(),
+    createCommentContainer(),
   );
 
   const application = appContainer.get<Application>(ComponentName.Application);

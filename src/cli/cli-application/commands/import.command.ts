@@ -46,22 +46,19 @@ export class ImportCommand implements Command {
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
 
-    await this.offerService.generate({
+    await this.offerService.create({
       title: offer.title,
       description: offer.description,
       city: offer.city.name,
       previewImage: offer.preview,
       images: offer.images,
       isPremium: offer.isPremium,
-      isFavorite: offer.isFavorite,
       placeType: offer.placeType,
-      rating: offer.rating,
       roomCount: offer.roomCount,
       guestCount: offer.guestCount,
       price: offer.price,
       conveniences: offer.conveniences,
       offerAuthor: user.id,
-      commentCount: offer.commentCount,
       location: offer.location,
     });
   }
