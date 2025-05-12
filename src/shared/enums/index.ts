@@ -1,5 +1,5 @@
 export * from './city-name.js';
-export * from './component.js';
+export * from './component-name.js';
 export * from './convenience.js';
 export * from './place-type.js';
 export * from './rating.js';

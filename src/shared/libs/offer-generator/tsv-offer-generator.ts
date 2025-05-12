@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 
 import { OfferGenerator } from './offer-generator.interface.js';
+import { UserType } from '../../enums/index.js';
 import {
   generateRandomCoordinate,
   generateRandomValue,
@@ -44,7 +45,7 @@ export class TSVOfferGenerator implements OfferGenerator {
     const images = getRandomItems(this.mockData.images).join(';');
     const isPremium = getRandomBoolean();
     const isFavorite = getRandomBoolean();
-    const type = getRandomItem<string>(this.mockData.types);
+    const placeType = getRandomItem<string>(this.mockData.types);
     const rating = generateRandomValue(MIN_NUMBER, MAX_NUMBER);
     const rooms = generateRandomValue(MIN_NUMBER, MAX_NUMBER);
     const guests = generateRandomValue(MIN_NUMBER, MAX_NUMBER);
@@ -56,7 +57,7 @@ export class TSVOfferGenerator implements OfferGenerator {
     const email = getRandomItem<string>(this.mockData.emails);
     const avatarImage = getRandomItem<string>(this.mockData.avatarImages);
     const password = getRandomItem<string>(this.mockData.passwords);
-    const userType = getRandomItem<string>(['обычный', 'pro']);
+    const userType = getRandomItem<string>([UserType.Pro, UserType.Common]);
     const commentsCount = generateRandomValue(MIN_NUMBER, MAX_NUMBER);
     const latitude = generateRandomCoordinate(MIN_COORDINATE, MAX_COORDINATE);
     const longitude = generateRandomCoordinate(MIN_COORDINATE, MAX_COORDINATE);
@@ -72,7 +73,7 @@ export class TSVOfferGenerator implements OfferGenerator {
       images,
       isPremium,
       isFavorite,
-      type,
+      placeType,
       rating,
       rooms,
       guests,
