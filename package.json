@@ -20,6 +20,7 @@
     "cli": "ts-node-esm src/main.cli.ts"
   },
   "devDependencies": {
+    "@typegoose/typegoose": "^12.15.1",
     "@types/convict": "^6.1.6",
     "@types/convict-format-with-validator": "^6.0.5",
     "@types/node": "18.17.17",
@@ -31,6 +32,7 @@
     "eslint-plugin-import": "^2.31.0",
     "got": "^14.4.6",
     "json-server": "^1.0.0-beta.3",
+    "mongoose": "^8.14.2",
     "pino-pretty": "^13.0.0",
     "rimraf": "5.0.1",
     "ts-node": "10.9.1",
@@ -42,14 +44,12 @@
     "npm": ">=8"
   },
   "dependencies": {
-    "@typegoose/typegoose": "^12.15.0",
     "chalk": "^5.4.1",
     "convict": "^6.2.4",
     "convict-format-with-validator": "^6.2.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.5.0",
     "inversify": "^6.0.2",
-    "mongoose": "^8.14.1",
     "mongosh": "^2.5.0",
     "pino": "^9.6.0",
     "reflect-metadata": "^0.2.2",
