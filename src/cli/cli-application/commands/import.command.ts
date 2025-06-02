@@ -95,7 +95,7 @@ export class ImportCommand implements Command {
   }
 
   private async saveUser(user: User) {
-    return await this.userService.create({
+    return await this.userService.findOrCreate({
       name: user.name,
       email: user.email,
       avatarImage: user.avatarImage,

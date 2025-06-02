@@ -1,3 +1,5 @@
+import { ClassConstructor, plainToInstance } from 'class-transformer';
+
 export function generateRandomValue(
   min: number,
   max: number,
@@ -31,4 +33,14 @@ export function generateRandomCoordinate(
 
 export function getRandomBoolean(probability = 0.5): boolean {
   return Math.random() < probability;
+}
+
+export function fillDto<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
+  return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });
+}
+
+export function createErrorObject(message: string) {
+  return {
+    error: message
+  };
 }

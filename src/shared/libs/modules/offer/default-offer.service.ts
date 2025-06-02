@@ -30,14 +30,14 @@ export class DefaultOfferService implements OfferService {
   public async findById(id: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findById(id)
-      .populate('authorId')
+      .populate('offerAuthor')
       .exec();
   }
 
   public async updateById(id: string, dto: UpdatedOfferDto): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findByIdAndUpdate(id, dto, { new: true })
-      .populate('authorId')
+      .populate('offerAuthor')
       .exec();
   }
 
@@ -52,7 +52,7 @@ export class DefaultOfferService implements OfferService {
       .find()
       .sort({ postDate: -1 })
       .limit(limit)
-      .populate('authorId')
+      .populate('offerAuthor')
       .exec();
   }
 
@@ -61,7 +61,7 @@ export class DefaultOfferService implements OfferService {
       .find({ city, isPremium: true })
       .sort({ postDate: -1 })
       .limit(3)
-      .populate('authorId')
+      .populate('offerAuthor')
       .exec();
   }
 
@@ -69,7 +69,7 @@ export class DefaultOfferService implements OfferService {
     return this.offerModel
       .find({ isFavorite: true })
       .sort({ postDate: -1 })
-      .populate('authorId')
+      .populate('offerAuthor')
       .exec();
   }
 
@@ -80,7 +80,7 @@ export class DefaultOfferService implements OfferService {
         { isFavorite: true },
         { new: true }
       )
-      .populate('authorId')
+      .populate('offerAuthor')
       .exec();
   }
 
@@ -91,7 +91,7 @@ export class DefaultOfferService implements OfferService {
         { isFavorite: false },
         { new: true }
       )
-      .populate('authorId')
+      .populate('offerAuthor')
       .exec();
   }
 
@@ -148,7 +148,7 @@ export class DefaultOfferService implements OfferService {
         { rating: parseFloat(newRating.toFixed(1)) },
         { new: true }
       )
-      .populate('authorId')
+      .populate('offerAuthor')
       .exec();
   }
 }
