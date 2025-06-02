@@ -4,14 +4,14 @@ import 'reflect-metadata';
 import { Types } from 'mongoose';
 
 import { OfferService, OfferEntity, CreateOfferDto, UpdatedOfferDto } from './index.js';
-import { ComponentName } from '../../../enums/index.js';
+import { Component } from '../../../types/index.js';
 import { Logger } from '../../logger/index.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
   constructor(
-    @inject(ComponentName.Logger) private readonly logger: Logger,
-    @inject(ComponentName.OfferModel)
+    @inject(Component.PinoLogger) private readonly logger: Logger,
+    @inject(Component.OfferModel)
     private readonly offerModel: types.ModelType<OfferEntity>
   ) {}
 

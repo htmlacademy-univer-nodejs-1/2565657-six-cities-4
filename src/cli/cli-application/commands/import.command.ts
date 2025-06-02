@@ -1,37 +1,91 @@
-import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constants.js';
+import { inject, injectable } from 'inversify';
+
+import { DEFAULT_DB_PORT } from './command.constants.js';
 import { Command } from './command.interface.js';
 import {
-  generateOffer,
+  generateOffer, generateUser,
   getErrorMessage, getMongoURI
 } from '../../../shared/helpers/index.js';
-import { Database, MongoDatabase } from '../../../shared/libs/database/index.js';
+import { Database } from '../../../shared/libs/database/index.js';
 import { TSVFileReader } from '../../../shared/libs/file-reader/index.js';
-import { ConsoleLogger, Logger } from '../../../shared/libs/logger/index.js';
-import { DefaultOfferService, OfferModel, OfferService } from '../../../shared/libs/modules/offer/index.js';
-import { DefaultUserService, UserModel, UserService } from '../../../shared/libs/modules/user/index.js';
-import { Offer } from '../../../shared/types/index.js';
+import { OfferService } from '../../../shared/libs/modules/offer/index.js';
+import { UserService } from '../../../shared/libs/modules/user/index.js';
+import { Component, Offer, User } from '../../../shared/types/index.js';
 
+@injectable()
 export class ImportCommand implements Command {
-  private userService: UserService;
-  private offerService: OfferService;
-  private database: Database;
-  private readonly logger: Logger;
   private salt!: string;
 
-  constructor() {
+  constructor(
+    @inject(Component.Database) private database: Database,
+    @inject(Component.DefaultUserService) private userService: UserService,
+    @inject(Component.DefaultOfferService) private offerService: OfferService,
+  ) {
     this.onImportedLine = this.onImportedLine.bind(this);
     this.onCompleteImport = this.onCompleteImport.bind(this);
-
-    this.logger = new ConsoleLogger();
-    this.offerService = new DefaultOfferService(this.logger, OfferModel);
-    this.userService = new DefaultUserService(this.logger, UserModel);
-    this.database = new MongoDatabase(this.logger);
   }
 
   private async onImportedLine(line: string, resolve: () => void) {
-    const offer = generateOffer(line);
+    const [
+      title,
+      description,
+      postDate,
+      cityName,
+      cityLatitude,
+      cityLongitude,
+      preview,
+      images,
+      isPremium,
+      isFavorite,
+      placeType,
+      rating,
+      roomCount,
+      guests,
+      price,
+      conveniences,
+      name,
+      email,
+      avatarImage,
+      password,
+      userType,
+      commentsCount,
+      latitude,
+      longitude,
+    ] = this.parseLine(line);
+
+    const user = generateUser(name, email, avatarImage, password, userType);
+    const savedUser = await this.saveUser(user);
+
+    const offerAuthorId = savedUser.id;
+
+    const offer = generateOffer(
+      title,
+      description,
+      postDate,
+      cityName,
+      cityLatitude,
+      cityLongitude,
+      preview,
+      images,
+      isPremium,
+      isFavorite,
+      placeType,
+      rating,
+      roomCount,
+      guests,
+      price,
+      conveniences,
+      offerAuthorId,
+      commentsCount,
+      latitude,
+      longitude,
+    );
     await this.saveOffer(offer);
     resolve();
+  }
+
+  private parseLine(line: string): string[] {
+    return line.replace('\n', '').split('\t');
   }
 
   private onCompleteImport(count: number) {
@@ -40,17 +94,23 @@ export class ImportCommand implements Command {
     this.database.disconnect();
   }
 
-  private async saveOffer(offer: Offer) {
-    const user = await this.userService.findOrCreate({
-      ...offer.offerAuthor,
-      password: DEFAULT_USER_PASSWORD
+  private async saveUser(user: User) {
+    return await this.userService.create({
+      name: user.name,
+      email: user.email,
+      avatarImage: user.avatarImage,
+      password: user.password,
+      userType: user.userType
     }, this.salt);
+  }
 
+  private async saveOffer(offer: Offer) {
     await this.offerService.create({
       title: offer.title,
       description: offer.description,
-      city: offer.city.name,
-      previewImage: offer.preview,
+      publicationDate: offer.publicationDate,
+      city: offer.city,
+      preview: offer.preview,
       images: offer.images,
       isPremium: offer.isPremium,
       placeType: offer.placeType,
@@ -58,7 +118,7 @@ export class ImportCommand implements Command {
       guestCount: offer.guestCount,
       price: offer.price,
       conveniences: offer.conveniences,
-      offerAuthor: user.id,
+      offerAuthor: offer.offerAuthor,
       location: offer.location,
     });
   }

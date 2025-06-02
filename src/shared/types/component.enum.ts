@@ -1,0 +1,20 @@
+export const Component = {
+  RestApplication: Symbol.for('RestApplication'),
+  CliApplication: Symbol.for('CliApplication'),
+  PinoLogger: Symbol.for('PinoLogger'),
+  ConsoleLogger: Symbol.for('ConsoleLogger'),
+  Config: Symbol.for('Config'),
+  Database: Symbol.for('Database'),
+  UserService: Symbol.for('UserService'),
+  UserModel: Symbol.for('UserModel'),
+  OfferService: Symbol.for('OfferService'),
+  OfferModel: Symbol.for('OfferModel'),
+  CommentService: Symbol.for('CommentService'),
+  CommentModel: Symbol.for('CommentModel'),
+  DefaultUserService: Symbol.for('DefaultUserService'),
+  DefaultOfferService: Symbol.for('DefaultOfferService'),
+  ImportCommand: Symbol.for('ImportCommand'),
+  VersionCommand: Symbol.for('VersionCommand'),
+  HelpCommand: Symbol.for('HelpCommand'),
+  GenerateCommand: Symbol.for('GenerateCommand')
+} as const;

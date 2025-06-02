@@ -23,8 +23,8 @@ export class PinoLogger implements Logger {
         },
         {
           target: 'pino/file',
-          level: 'info',
           options: {},
+          level: 'info',
         },
       ],
     });

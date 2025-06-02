@@ -7,13 +7,14 @@ import {
   OfferService,
   DefaultOfferService
 } from './index.js';
-import { ComponentName } from '../../../enums/index.js';
+import { Component } from '../../../types/index.js';
 
 
 export function createOfferContainer() {
   const offerContainer = new Container();
-  offerContainer.bind<OfferService>(ComponentName.OfferService).to(DefaultOfferService).inSingletonScope();
-  offerContainer.bind<types.ModelType<OfferEntity>>(ComponentName.OfferModel).toConstantValue(OfferModel);
+  offerContainer.bind<OfferService>(Component.OfferService).to(DefaultOfferService).inSingletonScope();
+  offerContainer.bind<types.ModelType<OfferEntity>>(Component.OfferModel).toConstantValue(OfferModel);
+  offerContainer.bind<OfferService>(Component.DefaultOfferService).to(DefaultOfferService).inSingletonScope();
 
   return offerContainer;
 }

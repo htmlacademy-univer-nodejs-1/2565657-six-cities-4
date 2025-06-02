@@ -8,56 +8,70 @@
       "Beachfront Bungalow with Ocean Access",
       "Spacious Loft in a Converted Warehouse",
       "Cozy Cottage in the Countryside",
-      "Historic Mansion with Private Park"
+      "Historic Mansion with Private Park",
+      "Chic Urban Flat with Balcony",
+      "Seaside Villa with Panoramic Views"
     ],
     "descriptions": [
-      "Enjoy natural light and stunning river views from this modern studio apartment.",
-      "Escape to nature in this charming cabin surrounded by forest.",
-      "Experience the elegance of a bygone era in this beautifully preserved townhouse.",
-      "A sleek and stylish apartment with breathtaking city views.",
-      "Relax on the beach just steps from your private bungalow.",
-      "Creative living space in a historic warehouse building.",
-      "A peaceful retreat in the heart of the countryside.",
-      "Live like royalty in this grand mansion with extensive grounds."
+      "Enjoy natural light and stunning river views from this modern studio apartment, perfect for a peaceful getaway or a vibrant city break.",
+      "Escape to nature in this charming cabin surrounded by lush forest, ideal for hiking, fishing, and stargazing.",
+      "Experience the elegance of a bygone era in this beautifully preserved townhouse, featuring original architectural details and a serene private garden.",
+      "A sleek and stylish apartment with breathtaking city views, located in the heart of the bustling downtown area, close to all amenities.",
+      "Relax on the pristine beach just steps from your private bungalow, offering direct ocean access and stunning sunsets.",
+      "Creative living space in a historic converted warehouse building, boasting high ceilings, exposed brick, and an open-plan design.",
+      "A peaceful retreat in the heart of the countryside, this cozy cottage offers rustic charm and comfortable living amidst picturesque landscapes.",
+      "Live like royalty in this grand mansion with extensive private grounds, perfect for large gatherings and lavish events.",
+      "Contemporary flat with a private balcony overlooking the city skyline, ideal for urban explorers seeking comfort and style.",
+      "Luxurious villa with expansive terraces and panoramic ocean views, providing an unforgettable escape by the sea."
     ],
-    "cities": ["London", "Berlin", "Rome", "Barcelona", "Prague", "Vienna"],
+    "cities": [
+      "Paris",
+      "Cologne",
+      "Brussels",
+      "Amsterdam",
+      "Hamburg",
+      "Dusseldorf"
+    ],
     "images": [
       "image-01.jpg",
       "image-02.png",
-      "image-03.webp",
-      "image-04.svg",
+      "image-03.png",
+      "image-04.jpg",
       "image-05.jpg",
       "image-06.png",
-      "image-07.webp",
-      "image-08.svg",
+      "image-07.png",
+      "image-08.jpg",
       "picture-01.jpg",
       "picture-02.png",
-      "picture-03.webp",
-      "picture-04.svg",
+      "picture-03.png",
+      "picture-04.jpg",
       "picture-05.jpg",
       "picture-06.png",
-      "picture-07.webp",
-      "picture-08.svg",
+      "picture-07.png",
+      "picture-08.jpg",
       "picture-09.jpg",
-      "picture-10.png"
+      "picture-10.png",
+      "room-1.jpg",
+      "room-2.png",
+      "room-3.jpg",
+      "living-room.png",
+      "bedroom.jpg"
     ],
-    "types": [
-      "studio",
-      "cabin",
-      "townhouse",
-      "bungalow",
-      "loft",
-      "cottage",
-      "mansion"
+    "placeTypes": [
+      "apartment",
+      "house",
+      "room",
+      "hotel"
     ],
     "conveniences": [
-      "Wi-Fi",
-      "Kitchen",
-      "Parking",
-      "Pet-friendly",
-      "Fireplace",
-      "Balcony",
-      "Swimming pool"
+      "Breakfast",
+      "Air conditioning",
+      "Laptop friendly",
+      "Workspace",
+      "Baby seat",
+      "Washer",
+      "Towels",
+      "Fridge"
     ],
     "names": [
       "Liam",
@@ -69,7 +83,9 @@
       "William",
       "Sophia",
       "James",
-      "Isabella"
+      "Isabella",
+      "Michael",
+      "Charlotte"
     ],
     "emails": [
       "liam@mail.com",
@@ -81,21 +97,30 @@
       "william@mail.com",
       "sophia@mail.com",
       "james@mail.com",
-      "isabella@mail.com"
+      "isabella@mail.com",
+      "michael@mail.com",
+      "charlotte@mail.com"
+    ],
+    "ratings": [1, 2, 3, 4, 5],
+    "rooms": [1, 2, 3, 4, 5, 6, 7, 8],
+    "guests": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "userTypes": [
+      "Common",
+      "Pro"
     ],
     "avatarImages": [
       "profile-1.png",
       "profile-2.jpg",
-      "profile-3.webp",
-      "profile-4.svg",
+      "profile-3.png",
+      "profile-4.jpg",
       "profile-5.png",
       "profile-6.jpg",
-      "profile-7.webp",
-      "profile-8.svg",
+      "profile-7.png",
+      "profile-8.jpg",
       "profile-9.png",
       "profile-10.jpg",
-      "profile-11.webp",
-      "profile-12.svg"
+      "profile-11.png",
+      "profile-12.jpg"
     ],
     "passwords": [
       "P@$$wOrd1",

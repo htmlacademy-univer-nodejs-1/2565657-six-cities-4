@@ -1,8 +1,9 @@
 import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose';
 
-import { CITIES } from './index.js';
+import { CitySchema } from './city.schema.js';
+import { LocationSchema } from './location.schema.js';
 import { Convenience, PlaceType } from '../../../enums/index.js';
-import { City, Location } from '../../../types/index.js';
+import { Location, Offer } from '../../../types/index.js';
 import { CommentEntity } from '../comment/index.js';
 import { UserEntity } from '../user/index.js';
 
@@ -31,7 +32,7 @@ export interface OfferEntity extends defaultClasses.Base {}
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export class OfferEntity extends defaultClasses.TimeStamps {
+export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
   @prop({
     required: true,
     minlength: 10,
@@ -56,9 +57,9 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
-    enum: Object.keys(CITIES),
+    type: CitySchema
   })
-  public city!: City;
+  public city!: CitySchema;
 
   @prop({
     required: true,
@@ -68,6 +69,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
+    type: () => [String]
   })
   public images!: string[];
 
@@ -87,11 +89,8 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
+    type: () => [String],
     enum: PlaceType,
-    validate: {
-      validator: (v: PlaceType) => Object.values(PlaceType).includes(v),
-      message: 'Такого типа помещения нет'
-    }
   })
   public placeType!: PlaceType;
 
@@ -118,12 +117,8 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
-    enum: Convenience,
-    placeType: [String],
-    validate: {
-      validator: (v: Convenience[]) => v.length > 0 && v.every((a) => Object.values(Convenience).includes(a)),
-      message: 'Такое "Удобство" отсутствует'
-    }
+    type: () => [String],
+    enum: Object.values(Convenience),
   })
   public conveniences!: Convenience[];
 
@@ -141,6 +136,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
+    type: LocationSchema,
     validate: {
       validator: (v: Location) =>
         v.latitude >= -90 &&
@@ -150,7 +146,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
       message: 'Неправильное местоположение'
     }
   })
-  public location!: Location;
+  public location!: LocationSchema;
 
   @prop({
     ref: 'CommentEntity',

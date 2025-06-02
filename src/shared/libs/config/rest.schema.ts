@@ -3,7 +3,7 @@ import validator from 'convict-format-with-validator';
 
 convict.addFormats(validator);
 
-export type Schema = {
+export type RestSchema = {
   PORT: number;
   SALT: string;
   DB_HOST: string;
@@ -13,7 +13,7 @@ export type Schema = {
   DB_NAME: string;
 };
 
-export const configSchema = convict<Schema>({
+export const configRestSchema = convict<RestSchema>({
   PORT: {
     doc: 'Порт для входящих соединений',
     format: 'port',
