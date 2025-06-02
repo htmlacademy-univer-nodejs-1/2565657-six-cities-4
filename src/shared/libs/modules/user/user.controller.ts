@@ -3,9 +3,10 @@ import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import { Logger } from 'pino';
 
-import { CreateUserRequest } from './create-user-request.type.js';
-import { LoginUserRequest } from './login-user-request.type.js';
 import { UserRdo } from './rdo/user.rdo.js';
+import { CreateUserRequest } from './type/create-user-request.type.js';
+import { LoginUserRequest } from './type/login-user-request.type.js';
+import { ShowUserRequest } from './type/show-user-request.type.js';
 import { UserService } from './user-service.interface.js';
 import { fillDto } from '../../../helpers/index.js';
 import { Component } from '../../../types/index.js';
@@ -28,13 +29,21 @@ export class UserController extends BaseController {
     this.logger.info('Регистрирация маршрутов для контроллера пользователей');
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({ path: '/show', method: HttpMethod.Get, handler: this.show });
     this.addRoute({ path: '/create', method: HttpMethod.Post, handler: this.create });
     this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
+    this.addRoute({ path: '/logout', method: HttpMethod.Post, handler: this.logout });
   }
 
   public async index(_req: Request, res: Response) {
     const users = await this.userService.find();
     const responseData = fillDto(UserRdo, users);
+    this.ok(res, responseData);
+  }
+
+  public async show(req: ShowUserRequest, res: Response) {
+    const user = await this.userService.findByEmail(req.body.email);
+    const responseData = fillDto(UserRdo, user);
     this.ok(res, responseData);
   }
 
@@ -58,6 +67,27 @@ export class UserController extends BaseController {
   }
 
   public async login(
+    req: LoginUserRequest,
+    _res: Response
+  ): Promise<void> {
+    const existedUser = await this.userService.findByEmail(req.body.email);
+
+    if (!existedUser) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        `Пользователь с таким email не найден: ${req.body.email}`,
+        'UserController'
+      );
+    }
+
+    throw new HttpError(
+      StatusCodes.NOT_IMPLEMENTED,
+      'Не реализовано',
+      'UserController'
+    );
+  }
+
+  public async logout(
     req: LoginUserRequest,
     _res: Response
   ): Promise<void> {

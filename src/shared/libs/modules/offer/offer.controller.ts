@@ -3,10 +3,11 @@ import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import { Logger } from 'pino';
 
-import { CreateOfferRequest } from './create-offer-request.type.js';
-import { DeleteOfferRequest } from './delete-offer-request.type.js';
 import { OfferService } from './offer-service.interface.js';
 import { OfferRdo } from './rdo/offer.rdo.js';
+import { CreateOfferRequest } from './type/create-offer-request.type.js';
+import { DeleteOfferRequest } from './type/delete-offer-request.type.js';
+import { ParamOfferId } from './type/param-offerid.type.js';
 import { fillDto } from '../../../helpers/index.js';
 import { Component } from '../../../types/index.js';
 import { BaseController, HttpError, HttpMethod } from '../../rest/index.js';
@@ -22,8 +23,25 @@ export class OfferController extends BaseController {
     this.logger.info('Регистрирация маршрутов для контроллера предложений');
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({ path: '/:offerId', method: HttpMethod.Get, handler: this.show });
     this.addRoute({ path: '/create', method: HttpMethod.Post, handler: this.create });
     this.addRoute({ path: '/delete', method: HttpMethod.Delete, handler: this.delete });
+  }
+
+  public async show({ params }: Request<ParamOfferId>, res: Response) {
+    const { offerId } = params;
+    const offer = await this.offerService.findById(offerId);
+
+    if (!offer) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Не найдено предложение с id: ${offerId}`,
+        'OfferController'
+      );
+    }
+
+    const responseData = fillDto(OfferRdo, offer.toObject());
+    this.ok(res, responseData);
   }
 
   public async index(_req: Request, res: Response) {

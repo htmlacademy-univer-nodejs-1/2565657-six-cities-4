@@ -1,11 +1,14 @@
-import { Ref } from '@typegoose/typegoose';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
+import { CityRdo } from './city.rdo.js';
+import { LocationRdo } from './location.rdo.js';
 import { Convenience, GuestCount, PlaceType, RoomCount } from '../../../../enums/index.js';
-import { City, Location } from '../../../../types/index.js';
-import { UserEntity } from '../../user/index.js';
+import { UserRdo } from '../../user/rdo/user.rdo.js';
 
 export class OfferRdo {
+  @Expose()
+  public id!: string;
+
   @Expose()
   public title!: string;
 
@@ -13,7 +16,8 @@ export class OfferRdo {
   public description!: string;
 
   @Expose()
-  public city!: City;
+  @Type(() => CityRdo)
+  public city!: CityRdo;
 
   @Expose()
   public preview!: string;
@@ -39,9 +43,11 @@ export class OfferRdo {
   @Expose()
   public conveniences!: Convenience[];
 
-  @Expose()
-  public offerAuthor!: Ref<UserEntity>;
+  @Expose({ name: 'id' })
+  @Type(() => UserRdo)
+  public offerAuthor!: UserRdo;
 
   @Expose()
-  public location!: Location;
+  @Type(() => LocationRdo)
+  public location!: LocationRdo;
 }

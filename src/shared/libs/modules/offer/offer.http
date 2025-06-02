@@ -11,3 +11,8 @@ Content-Type: application/json
 }
 
 ###
+
+GET http://localhost:6000/offers/683d17b425e1b3e13c3ea90d HTTP/1.1
+Content-Type: application/json
+
+###
