@@ -7,4 +7,5 @@ export interface UserService {
   findByEmail(email: string): Promise<DocumentType<UserEntity> | null>;
   findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
   updateById(userId: string, dto: UpdatedUserDto): Promise<DocumentType<UserEntity> | null>;
+  find(): Promise<DocumentType<UserEntity>[]>;
 }

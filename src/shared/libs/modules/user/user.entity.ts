@@ -29,7 +29,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({
     required: true,
     unique: true,
-    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Введите корректный пароль'],
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Введите корректный email'],
     trim: true
   })
   public email: string;
@@ -45,7 +45,8 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
 
   @prop({
     required: true,
-    enum: ['обычный', 'pro'],
+    type: () => [String],
+    enum: UserType,
     default: 'обычный',
   })
   public userType: UserType;

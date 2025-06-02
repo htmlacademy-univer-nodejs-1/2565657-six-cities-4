@@ -1,14 +1,26 @@
+import { inject, injectable } from 'inversify';
+
 import { CommandParser } from './command-parser.js';
 import { Command } from './commands/command.interface.js';
+import { Component } from '../../shared/types/index.js';
 
 type CommandCollection = Record<string, Command>;
 
+@injectable()
 export class CLIApplication {
   private commands: CommandCollection = {};
+  private readonly defaultCommand: string = '--help';
 
-  constructor(private readonly defaultCommand: string = '--help') {}
+  constructor(
+    @inject(Component.ImportCommand) private readonly importCommand: Command,
+    @inject(Component.GenerateCommand) private readonly generateCommand: Command,
+    @inject(Component.HelpCommand) private readonly helpCommand: Command,
+    @inject(Component.VersionCommand) private readonly versionCommand: Command
+  ) {}
 
-  public registerCommands(commandList: Command[]): void {
+  public init() {
+    const commandList = [this.importCommand, this.generateCommand, this.helpCommand, this.versionCommand];
+
     commandList.forEach((command) => {
       if (Object.hasOwn(this.commands, command.getName())) {
         throw new Error(`Команда ${command.getName()} уже зарегистрирована`);

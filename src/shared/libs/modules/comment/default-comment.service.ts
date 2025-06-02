@@ -2,12 +2,12 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
 
 import { CommentService, CreateCommentDto, CommentEntity } from './index.js';
-import { ComponentName } from '../../../enums/index.js';
+import { Component } from '../../../types/index.js';
 
 @injectable()
 export class DefaultCommentService implements CommentService {
   constructor(
-    @inject(ComponentName.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>
+    @inject(Component.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>
   ) {}
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {

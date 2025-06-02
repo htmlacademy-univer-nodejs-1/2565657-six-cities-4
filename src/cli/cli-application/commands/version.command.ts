@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import { injectable } from 'inversify';
 
 import { Command } from './command.interface.js';
 import { readFileSync } from 'node:fs';
@@ -8,12 +9,29 @@ type PackageJSONConfig = {
   version: string;
 };
 
+function isPackageJSONConfig(value: unknown): value is PackageJSONConfig {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    Object.hasOwn(value, 'version')
+  );
+}
+
+@injectable()
 export class VersionCommand implements Command {
-  constructor(private readonly filePath: string = './package.json') {}
+  private readonly filePath: string = './package.json';
+
+  constructor() {}
 
   private readVersion(): string {
     const jsonContent = readFileSync(resolve(this.filePath), 'utf-8');
-    const importedContent = JSON.parse(jsonContent) as PackageJSONConfig;
+    const importedContent: unknown = JSON.parse(jsonContent);
+
+    if (!isPackageJSONConfig(importedContent)) {
+      throw new Error('Невозможно спарсить JSON контент');
+    }
+
     return importedContent.version;
   }
 

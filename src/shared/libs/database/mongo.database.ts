@@ -2,12 +2,12 @@ import { inject, injectable } from 'inversify';
 import * as Mongoose from 'mongoose';
 
 import { Database } from './index.js';
-import { ComponentName } from '../../enums/index.js';
+import { Component } from '../../types/index.js';
 import { Logger } from '../logger/index.js';
 import { setTimeout } from 'node:timers/promises';
 
 const MAX_REPEAT_COUNT = 4;
-const REPEAT_DELAY = 1200;
+const REPEAT_DELAY = 2000;
 
 @injectable()
 export class MongoDatabase implements Database {
@@ -15,7 +15,7 @@ export class MongoDatabase implements Database {
   private isDbConnected: boolean;
 
   constructor(
-    @inject(ComponentName.Logger) private readonly logger: Logger
+    @inject(Component.PinoLogger) private readonly logger: Logger
   ) {
     this.isDbConnected = false;
   }

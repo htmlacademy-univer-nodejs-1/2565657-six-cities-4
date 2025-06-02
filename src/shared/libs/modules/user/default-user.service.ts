@@ -2,14 +2,14 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
 
 import { UserService, UpdatedUserDto, CreateUserDto, UserEntity } from './index.js';
-import { ComponentName } from '../../../enums/index.js';
+import { Component } from '../../../types/index.js';
 import { Logger } from '../../logger/index.js';
 
 @injectable()
 export class DefaultUserService implements UserService {
   constructor(
-    @inject(ComponentName.Logger) private readonly logger: Logger,
-    @inject(ComponentName.UserModel) private readonly userModel: types.ModelType<UserEntity>
+    @inject(Component.PinoLogger) private readonly logger: Logger,
+    @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>
   ) {}
 
   public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
@@ -40,5 +40,9 @@ export class DefaultUserService implements UserService {
     return this.userModel
       .findByIdAndUpdate(userId, dto, { new: true })
       .exec();
+  }
+
+  public async find(): Promise<DocumentType<UserEntity>[]> {
+    return this.userModel.find().exec();
   }
 }

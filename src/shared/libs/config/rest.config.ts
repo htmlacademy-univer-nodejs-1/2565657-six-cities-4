@@ -2,15 +2,15 @@ import { config } from 'dotenv';
 import { inject, injectable } from 'inversify';
 
 import { Config } from './config.interface.js';
-import { configSchema, Schema } from './schema.js';
-import { ComponentName } from '../../enums/index.js';
+import { configRestSchema, RestSchema } from './rest.schema.js';
+import { Component } from '../../types/index.js';
 import { Logger } from '../logger/index.js';
 
 @injectable()
-export class RestConfig implements Config<Schema> {
-  private readonly config: Schema;
+export class RestConfig implements Config<RestSchema> {
+  private readonly config: RestSchema;
 
-  constructor(@inject(ComponentName.Logger) private readonly logger: Logger) {
+  constructor(@inject(Component.PinoLogger) private readonly logger: Logger) {
     const parsedOutput = config();
 
     if (parsedOutput.error) {
@@ -19,14 +19,14 @@ export class RestConfig implements Config<Schema> {
       );
     }
 
-    configSchema.load({});
-    configSchema.validate({ allowed: 'strict', output: this.logger.info });
+    configRestSchema.load({});
+    configRestSchema.validate({ allowed: 'strict', output: this.logger.info });
 
-    this.config = configSchema.getProperties();
-    this.logger.info('.env файл найдем и успешно спаршен!');
+    this.config = configRestSchema.getProperties();
+    this.logger.info('.env файл найден и успешно спаршен!');
   }
 
-  public get<T extends keyof Schema>(key: T): Schema[T] {
+  public get<T extends keyof RestSchema>(key: T): RestSchema[T] {
     return this.config[key];
   }
 }

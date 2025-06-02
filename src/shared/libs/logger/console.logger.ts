@@ -1,6 +1,9 @@
+import { injectable } from 'inversify';
+
 import { Logger } from './logger.interface.js';
 import { getErrorMessage } from '../../helpers/index.js';
 
+@injectable()
 export class ConsoleLogger implements Logger {
   public debug(message: string, ...args: unknown[]): void {
     console.debug(message, ...args);

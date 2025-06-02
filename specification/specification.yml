@@ -16,7 +16,7 @@ tags:
     description: Запросы, связанные с комментариями.
 
 paths:
-  /users/register:
+  /users/create:
     post:
       tags:
         - users

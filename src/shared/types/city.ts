@@ -5,3 +5,4 @@ export type City = {
   name: CityName;
   location: Location;
 };
+

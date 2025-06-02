@@ -21,7 +21,7 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: tacser
       ME_CONFIG_MONGODB_ADMINPASSWORD: mongo
-      ME_CONFIG_MONGODB_URL: mongodb://admin:test@db:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://tacser:mongo@db:27017/
 
 volumes:
   six-cities_data:
