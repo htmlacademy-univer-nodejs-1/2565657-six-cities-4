@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
 import { Types } from 'mongoose';
 
-import { OfferService, OfferEntity, CreateOfferDto, UpdatedOfferDto } from './index.js';
+import { OfferService, OfferEntity, CreateOfferDto, UpdateOfferDto } from './index.js';
 import { Component } from '../../../types/index.js';
 import { Logger } from '../../logger/index.js';
 
@@ -34,7 +34,7 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
-  public async updateById(id: string, dto: UpdatedOfferDto): Promise<DocumentType<OfferEntity> | null> {
+  public async updateById(id: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findByIdAndUpdate(id, dto, { new: true })
       .populate('offerAuthor')
