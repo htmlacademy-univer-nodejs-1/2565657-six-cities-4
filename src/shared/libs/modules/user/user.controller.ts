@@ -3,6 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import { Logger } from 'pino';
 
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { LoginUserDto } from './dto/login-user.dto.js';
 import { UserRdo } from './rdo/user.rdo.js';
 import { CreateUserRequest } from './type/create-user-request.type.js';
 import { LoginUserRequest } from './type/login-user-request.type.js';
@@ -12,6 +14,7 @@ import { fillDto } from '../../../helpers/index.js';
 import { Component } from '../../../types/index.js';
 import { Config, RestSchema } from '../../config/index.js';
 import { BaseController, HttpError, HttpMethod } from '../../rest/index.js';
+import { ValidateDtoMiddleware } from '../../rest/middleware/validate-dto.middleware.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -28,11 +31,41 @@ export class UserController extends BaseController {
 
     this.logger.info('Регистрирация маршрутов для контроллера пользователей');
 
-    this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/show', method: HttpMethod.Get, handler: this.show });
-    this.addRoute({ path: '/create', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
-    this.addRoute({ path: '/logout', method: HttpMethod.Post, handler: this.logout });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Get,
+      handler: this.index
+    });
+    this.addRoute({
+      path: '/create',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateUserDto)]
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Post,
+      handler: this.login,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
+    });
+    this.addRoute({
+      path: '/logout',
+      method: HttpMethod.Post,
+      handler: this.logout,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
+    });
+    this.addRoute({
+      path: '/:userId',
+      method: HttpMethod.Get,
+      handler: this.show
+    });
+
+
+    // this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    // this.addRoute({ path: '/show', method: HttpMethod.Get, handler: this.show });
+    // this.addRoute({ path: '/create', method: HttpMethod.Post, handler: this.create });
+    // this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
+    // this.addRoute({ path: '/logout', method: HttpMethod.Post, handler: this.logout });
   }
 
   public async index(_req: Request, res: Response) {
