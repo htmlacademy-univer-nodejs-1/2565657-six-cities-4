@@ -11,6 +11,7 @@ import { CreateCommentRequest } from './type/create-comment-request.type.js';
 import { fillDto } from '../../../helpers/index.js';
 import { Component } from '../../../types/index.js';
 import { BaseController, HttpError, HttpMethod } from '../../rest/index.js';
+import { PrivateRouteMiddleware } from '../../rest/middleware/private-route.middleware.js';
 import { ValidateDtoMiddleware } from '../../rest/middleware/validate-dto.middleware.js';
 
 @injectable()
@@ -28,13 +29,14 @@ export class CommentController extends BaseController {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateCommentDto)
       ]
     });
   }
 
   public async create(
-    { body }: CreateCommentRequest,
+    { body, tokenPayload }: CreateCommentRequest,
     res: Response
   ): Promise<void> {
 
@@ -46,7 +48,7 @@ export class CommentController extends BaseController {
       );
     }
 
-    const comment = await this.commentService.create(body);
+    const comment = await this.commentService.create({ ...body, authorId: tokenPayload.id });
     await this.offerService.incCommentCount(body.offerId);
     this.created(res, fillDto(CommentRdo, comment));
   }
