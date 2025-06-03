@@ -5,6 +5,7 @@ import { Logger } from 'pino';
 
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { LoginUserDto } from './dto/login-user.dto.js';
+import { LoggedUserRdo } from './rdo/logged-user.rdo.js';
 import { UserRdo } from './rdo/user.rdo.js';
 import { CreateUserRequest } from './type/create-user-request.type.js';
 import { LoginUserRequest } from './type/login-user-request.type.js';
@@ -15,6 +16,7 @@ import { Component } from '../../../types/index.js';
 import { Config, RestSchema } from '../../config/index.js';
 import { BaseController, HttpError, HttpMethod } from '../../rest/index.js';
 import { ValidateDtoMiddleware } from '../../rest/middleware/validate-dto.middleware.js';
+import { AuthService } from '../auth/auth-service.interface.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -23,7 +25,8 @@ export class UserController extends BaseController {
   constructor(
     @inject(Component.PinoLogger) protected readonly logger: Logger,
     @inject(Component.DefaultUserService) private readonly userService: UserService,
-    @inject(Component.Config) private readonly config: Config<RestSchema>
+    @inject(Component.Config) private readonly config: Config<RestSchema>,
+    @inject(Component.AuthService) private readonly authService: AuthService
   ) {
     super(logger);
 
@@ -59,7 +62,11 @@ export class UserController extends BaseController {
       method: HttpMethod.Get,
       handler: this.show
     });
-
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.checkAuthenticate,
+    });
 
     // this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     // this.addRoute({ path: '/show', method: HttpMethod.Get, handler: this.show });
@@ -100,24 +107,16 @@ export class UserController extends BaseController {
   }
 
   public async login(
-    req: LoginUserRequest,
-    _res: Response
+    { body }: LoginUserRequest,
+    res: Response
   ): Promise<void> {
-    const existedUser = await this.userService.findByEmail(req.body.email);
-
-    if (!existedUser) {
-      throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        `Пользователь с таким email не найден: ${req.body.email}`,
-        'UserController'
-      );
-    }
-
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Не реализовано',
-      'UserController'
-    );
+    const user = await this.authService.verify(body);
+    const token = await this.authService.authenticate(user);
+    const responseData = fillDto(LoggedUserRdo, {
+      email: user.email,
+      token,
+    });
+    this.ok(res, responseData);
   }
 
   public async logout(
@@ -139,5 +138,19 @@ export class UserController extends BaseController {
       'Не реализовано',
       'UserController'
     );
+  }
+
+  public async checkAuthenticate({ tokenPayload: { email }}: Request, res: Response) {
+    const foundedUser = await this.userService.findByEmail(email);
+
+    if (! foundedUser) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController'
+      );
+    }
+
+    this.ok(res, fillDto(LoggedUserRdo, foundedUser));
   }
 }
