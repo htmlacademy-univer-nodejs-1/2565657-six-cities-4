@@ -57,7 +57,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
 
   @prop({
     required: true,
-    type: CitySchema
+    placeType: CitySchema
   })
   public city!: CitySchema;
 
@@ -69,7 +69,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
 
   @prop({
     required: true,
-    type: () => [String]
+    placeType: () => [String]
   })
   public images!: string[];
 
@@ -89,7 +89,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
 
   @prop({
     required: true,
-    type: () => [String],
+    placeType: () => [String],
     enum: PlaceType,
   })
   public placeType!: PlaceType;
@@ -117,7 +117,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
 
   @prop({
     required: true,
-    type: () => [String],
+    placeType: () => [String],
     enum: Object.values(Convenience),
   })
   public conveniences!: Convenience[];
@@ -136,7 +136,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
 
   @prop({
     required: true,
-    type: LocationSchema,
+    placeType: LocationSchema,
     validate: {
       validator: (v: Location) =>
         v.latitude >= -90 &&

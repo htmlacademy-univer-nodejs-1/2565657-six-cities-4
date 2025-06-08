@@ -20,7 +20,7 @@ paths:
     post:
       tags:
         - users
-      summary: Добавление пользователя
+      summary: Создание нового пользователя
       description: Регистрация пользователя
       operationId: createUser
       requestBody:
@@ -29,14 +29,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRegisterData'
+              $ref: '#/components/schemas/UserCreateRequest'
       responses:
         '201':
           description: Удалось создать пользователя
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
         '400':
           description: Возможно, пользователь с такими данными уже существует, либо проверьте корректность данных
         '409':
@@ -55,18 +51,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserLoginData'
+              $ref: '#/components/schemas/UserLoginRequest'
       responses:
         '200':
           description: Успешная аутентификация пользователя
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                    description: Токен, необходимый для доступа к защищённым ресурсам
+                $ref: '#/components/schemas/UserLoginResponse'
+                 
         '400':
           description: Ошибка из-за неверных данных
         '401':
@@ -102,7 +95,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Токен, необходимый для доступа к защищённым ресурсам
         '401':
           description: Пользователь не авторизован
 
@@ -111,7 +108,7 @@ paths:
       tags:
         - offers
       summary: Получение списка предложений
-      description: Возвращает список доступных предложений по аренде с возможностью ограничения по количеству
+      description: Возвращает список доступных предложений по аренде с возможностью ограничения по количеству (предложения содержат не полную информацию)
       operationId: getOffers
       parameters:
         - name: limit
@@ -120,7 +117,7 @@ paths:
           required: false
           schema:
             type: integer
-            default: 60
+            default: 50
       responses:
         '200':
           description: Успешно получен список предложений
@@ -129,7 +126,41 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OfferShort'
+                  $ref: '#/components/schemas/Offer'
+  /offers/create:
+    post:
+      tags:
+        - offers
+      summary: Создание нового предложения
+      security:
+        - bearerAuth: [ ]
+      description: Позволяет создать новое предложение
+      operationId: postOffer
+      parameters:
+        - name: newOffer
+          in: path
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferCreateRequest'
+      responses:
+        '200':
+          description: Идентификатор нового предложения успешно получен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  offerId:
+                    type: string
+                    description: Id нового предложения
+        '400':
+          description: Ошибка из-за невалидных данных в запросе
+        '401':
+          description: Пользователь не авторизован для выполнения этого действия
+        '403':
+          description: Пользователь не имеет прав на добавление нового предложения
 
   /offers/{offerId}:
     get:
@@ -151,7 +182,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Offer'
+                $ref: '#/components/schemas/DetailedOffer'
         '404':
           description: Предложение с указанным идентификатором не найдено
 
@@ -176,14 +207,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OfferUpdateData'
+              $ref: '#/components/schemas/OfferUpdateRequest'
       responses:
         '200':
           description: Предложение успешно обновлено
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Offer'
+                $ref: '#/components/schemas/DetailedOffer'
         '400':
           description: Ошибка из-за невалидных данных в запросе
         '401':
@@ -200,7 +231,7 @@ paths:
       description: Позволяет удалить конкретное предложение по его идентификатору
       operationId: deleteOffer
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: offerId
           in: path
@@ -241,7 +272,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OfferShort'
+                  $ref: '#/components/schemas/Offer'
 
   /offers/favorite:
     get:
@@ -251,7 +282,7 @@ paths:
       description: Позволяет получить список предложений, которые пользователь добавил в избранное
       operationId: getFavoriteOffers
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       responses:
         '200':
           description: Успешно получен список избранных предложений
@@ -260,10 +291,11 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OfferShort'
+                  $ref: '#/components/schemas/Offer'
         '401':
           description: Пользователь не авторизован для доступа к избранным предложениям
 
+  /offers/{offerId}/favorite:
     post:
       tags:
         - offers
@@ -271,23 +303,18 @@ paths:
       description: Позволяет пользователю добавить предложение в его список избранных
       operationId: addToFavorites
       security:
-        - bearerAuth: [ ]
-      requestBody:
-        description: Идентификатор предложения, которое необходимо добавить в избранное
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                offerId:
-                  type: string
-                  format: uuid
+        - bearerAuth: []
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+
       responses:
         '200':
           description: Предложение успешно добавлено в избранное
-        '400':
-          description: Ошибка из-за невалидных данных в запросе
         '401':
           description: Пользователь не авторизован для выполнения этого действия
         '404':
@@ -301,22 +328,17 @@ paths:
       operationId: removeFromFavorites
       security:
         - bearerAuth: [ ]
-      requestBody:
-        description: Идентификатор предложения, которое необходимо удалить из избранного
-        required: true
-        content:
-          application/json:
+      parameters:
+          - name: offerId
+            in: path
+            required: true
             schema:
-              type: object
-              properties:
-                offerId:
-                  type: string
-                  format: uuid
+              type: string
+              format: uuid
+
       responses:
         '200':
           description: Предложение успешно удалено из избранного
-        '400':
-          description: Ошибка из-за невалидных данных в запросе
         '401':
           description: Пользователь не авторизован для выполнения этого действия
         '404':
@@ -355,7 +377,7 @@ paths:
       description: Позволяет пользователю создать новый комментарий для конкретного предложения
       operationId: createComment
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: offerId
           in: path
@@ -369,7 +391,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CommentCreateData'
+              $ref: '#/components/schemas/CommentCreateRequest'
       responses:
         '201':
           description: Комментарий успешно создан и добавлен к предложению
@@ -385,6 +407,12 @@ paths:
           description: Предложение с указанным идентификатором не найдено
 
 components:
+  securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+        description: Схема аутентификации с использованием токена Bearer в формате JWT
   schemas:
     User:
       type: object
@@ -395,29 +423,36 @@ components:
           description: Уникальный идентификатор пользователя
         name:
           type: string
+          minLength: 1
+          maxLength: 15
           description: Имя пользователя
         email:
           type: string
           format: email
           description: Электронная почта пользователя
-        avatar:
+        avatarImage:
           type: string
           description: URL изображения аватара пользователя
           format: uri
         password:
           type: string
+          minLength: 6
+          maxLength: 12
           description: Пароль пользователя (не возвращается в ответах)
           example: 123456
-        isPro:
-          type: boolean
-          description: Указывает, является ли пользователь PRO (профессиональным)
+        userType:
+          type: string
+          enum: [Common, Pro]
+          description: Тип пользователя (Common или Pro)
 
-    UserRegisterData:
+
+    UserCreateRequest:
       type: object
       required:
         - name
         - email
         - password
+        - userType
       properties:
         name:
           type: string
@@ -433,15 +468,16 @@ components:
           minLength: 6
           maxLength: 12
           description: Пароль для доступа, от 6 до 12 символов
-        avatar:
+        avatarImage:
           type: string
           format: uri
           description: (Необязательный) URL изображения аватара пользователя
-        isPro:
-          type: boolean
-          description: Указывает, хочет ли пользователь стать PRO
+        userType:
+          type: string
+          enum: [Common, Pro]
+          description: тип пользователя (Common или Pro)
 
-    UserLoginData:
+    UserLoginRequest:
       type: object
       required:
         - email
@@ -453,25 +489,43 @@ components:
           description: Электронная почта для входа в систему
         password:
           type: string
+          minLength: 6
+          maxLength: 12
           description: Пароль для доступа к аккаунту
 
-    Location:
+    UserLoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Токен, необходимый для доступа к защищённым ресурсам
+        name:
+          type: string
+          description: Имя пользователя, если нужно для отображения
+        email:
+          type: string
+          format: email
+          description: Email пользователя, если нужен для отображения  
+
+    DetailedOffer:
       type: object
       required:
-        - latitude
-        - longitude
-      properties:
-        latitude:
-          type: number
-          format: float
-          description: Широта местоположения в градусах
-        longitude:
-          type: number
-          format: float
-          description: Долгота местоположения в градусах
-
-    Offer:
-      type: object
+        - id
+        - title
+        - description
+        - publicationDate  
+        - preview
+        - images
+        - isPremium
+        - isFavorite
+        - rating
+        - placeType
+        - roomCount
+        - guestCount
+        - price
+        - conveniences
+        - offerAuthor
+        - location
       properties:
         id:
           type: string
@@ -492,9 +546,8 @@ components:
           format: date-time
           description: Дата и время публикации предложения в формате ISO 8601
         city:
-          type: string
-          enum: [ Paris, Cologne, Brussels, Amsterdam, Hamburg, Dusseldorf ]
-          description: Город, в котором расположено предложение
+          $ref: '#/components/schemas/City'
+          description: Город, в котором находится предложение
         preview:
           type: string
           format: uri
@@ -544,68 +597,85 @@ components:
             type: string
             enum: [ Breakfast, Air conditioning, Laptop friendly workspace, Baby seat, Washer, Towels, Fridge ]
           description: Список удобств, доступных в предложении
-        host:
+        offerAuthor:
           $ref: '#/components/schemas/User'
         commentsCount:
           type: integer
-          description: Количество комментариев к предложению
+          description: Количество комментариев к предложению (рассчитывается автоматически)
         location:
           $ref: '#/components/schemas/Location'
 
-    OfferShort:
+    Offer:
       type: object
+      required:
+        - id
+        - title 
+        - city
+        - preview
+        - isPremium
+        - isFavorite
+        - rating
+        - placeType
+        - price
+        - offerAuthor
+        - location
       properties:
         id:
           type: string
           format: uuid
-          description: Уникальный идентификатор краткого предложения
+          description: Уникальный идентификатор предложения
         title:
           type: string
-          description: Заголовок краткого предложения
-        placeType:
-          type: string
-          description: Тип жилья (апартамент, дом, комната или отель)
-        price:
-          type: integer
-          description: Цена за ночь проживания в кратком предложении
+          minLength: 10
+          maxLength: 100
+          description: Заголовок предложения, от 10 до 100 символов
         city:
-          type: string
-          description: Город, в котором расположено краткое предложение
+          $ref: '#/components/schemas/City'
+          description: Город, в котором находится предложение
         preview:
           type: string
           format: uri
-          description: URL изображения-превью краткого предложения
+          description: URL изображения-превью предложения
         isPremium:
           type: boolean
-          description: Указывает, является ли краткое предложение премиум-классом
+          description: Указывает, является ли предложение премиум-классом
         isFavorite:
           type: boolean
-          description: Указывает, добавлено ли краткое предложение в избранное пользователем
+          description: Указывает, добавлено ли предложение в избранное пользователем
         rating:
           type: number
-          description: Рейтинг краткого предложения по шкале от 1 до 5
-        commentCount:
-          type: integer
-          description: Количество комментариев к краткому предложению
-        publicationDate:
+          minimum: 1
+          maximum: 5
+          format: float
+          description: Рейтинг предложения по шкале от 1 до 5
+        placeType:
           type: string
-          format: date-time
-          description: Дата и время публикации краткого предложения в формате ISO 8601
-
-    OfferCreateData:
+          enum: [ apartment, house, room, hotel ]
+          description: Тип жилья (апартамент, дом, комната или отель)
+        price:
+          type: integer
+          minimum: 100
+          maximum: 100000
+          description: Цена за ночь проживания в предложении (от 100 до 100000)
+        offerAuthor:
+          $ref: '#/components/schemas/User'
+        location:
+          $ref: '#/components/schemas/Location'
+        
+    OfferCreateRequest:
       type: object
       required:
         - title
         - description
         - city
-        - previewImage
+        - preview
         - images
         - isPremium
-        - type
-        - bedrooms
-        - maxAdults
+        - placeType
+        - roomCount
+        - guestCount
         - price
-        - goods
+        - conveniences
         - location
       properties:
         title:
@@ -619,10 +689,9 @@ components:
           maxLength: 1024
           description: Подробное описание предложения, от 20 до 1024 символов
         city:
-          type: string
-          enum: [ Paris, Cologne, Brussels, Amsterdam, Hamburg, Dusseldorf ]
-          description: Город, в котором расположено предложение
-        previewImage:
+          $ref: '#/components/schemas/City'
+          description: Город, в котором находится предложение
+        preview:
           type: string
           format: uri
           description: URL изображения-превью предложения
@@ -633,11 +702,11 @@ components:
             format: uri
           minItems: 6
           maxItems: 6
-          description: Массив из 6 изображений предложения (обязателен)
+          description: Массив из 6 изображений предложения
         isPremium:
           type: boolean
           description: Указывает, является ли предложение премиум-классом
-        type:
+        placeType:
           type: string
           enum: [ apartment, house, room, hotel ]
           description: Тип жилья (апартамент, дом, комната или отель)
@@ -666,27 +735,26 @@ components:
           $ref: '#/components/schemas/Location'
           description: Географическое положение предложения
 
-    OfferUpdateData:
+    OfferUpdateRequest:
       type: object
       properties:
         title:
           type: string
           minLength: 10
           maxLength: 100
-          description: Заголовок предложения, от 10 до 100 символов (необязательный)
+          description: Заголовок предложения, от 10 до 100 символов
         description:
           type: string
           minLength: 20
           maxLength: 1024
-          description: Подробное описание предложения, от 20 до 1024 символов (необязательный)
+          description: Подробное описание предложения, от 20 до 1024 символов
         city:
-          type: string
-          enum: [ Paris, Cologne, Brussels, Amsterdam, Hamburg, Dusseldorf ]
-          description: Город, в котором расположено предложение (необязательный)
-        previewImage:
+          $ref: '#/components/schemas/City'
+          description: Город, в котором находится предложение
+        preview:
           type: string
           format: uri
-          description: URL изображения-превью предложения (необязательный)
+          description: URL изображения-превью предложения
         images:
           type: array
           items:
@@ -694,41 +762,46 @@ components:
             format: uri
           minItems: 6
           maxItems: 6
-          description: Массив из 6 изображений предложения (необязательный)
+          description: Массив из 6 изображений предложения
         isPremium:
           type: boolean
-          description: Указывает, является ли предложение премиум-классом (необязательный)
-        type:
+          description: Указывает, является ли предложение премиум-классом
+        placeType:
           type: string
           enum: [ apartment, house, room, hotel ]
-          description: Тип жилья (апартамент, дом, комната или отель) (необязательный)
+          description: Тип жилья (апартамент, дом, комната или отель)
         roomCount:
           type: integer
           minimum: 1
           maximum: 8
-          description: Количество спален в предложении (от 1 до 8) (необязательный)
+          description: Количество спален в предложении (от 1 до 8)
         guestCount:
           type: integer
           minimum: 1
           maximum: 10
-          description: Максимальное количество взрослых, которые могут разместиться в предложении (от 1 до 10) (необязательный)
+          description: Максимальное количество взрослых, которые могут разместиться в предложении (от 1 до 10)
         price:
           type: integer
           minimum: 100
           maximum: 100000
-          description: Цена за ночь проживания в предложении (от 100 до 100000) (необязательный)
+          description: Цена за ночь проживания в предложении (от 100 до 100000)
         conveniences:
           type: array
           items:
             type: string
             enum: [ Breakfast, Air conditioning, Laptop friendly workspace, Baby seat, Washer, Towels, Fridge ]
-          description: Список удобств, доступных в предложении (необязательный)
+          description: Список удобств, доступных в предложении
         location:
           $ref: '#/components/schemas/Location'
-          description: Географическое положение предложения (необязательный)
+          description: Географическое положение предложения
 
     Comment:
       type: object
+      required:
+        - text
+        - publicationDate
+        - rating
+        - offerAuthor
       properties:
         id:
           type: string
@@ -752,7 +825,7 @@ components:
           $ref: '#/components/schemas/User'
           description: Информация об авторе комментария
 
-    CommentCreateData:
+    CommentCreateRequest:
       type: object
       required:
         - text
@@ -769,9 +842,30 @@ components:
           maximum: 5
           description: Оценка комментария, в диапазоне от 1 до 5 (обязательный)
 
-    securitySchemes:
-      bearerAuth:
-        type: http
-        scheme: bearer
-        bearerFormat: JWT
-        description: Схема аутентификации с использованием токена Bearer в формате JWT
+    Location:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: float
+          description: Широта местоположения в градусах
+        longitude:
+          type: number
+          format: float
+          description: Долгота местоположения в градусах
+
+    City:
+      type: object
+      required:
+        - location
+        - cityName
+      properties:
+        location:
+            $ref: '#/components/schemas/Location'
+        cityName:         
+            type: string
+            enum: [ Paris, Cologne, Brussels, Amsterdam, Hamburg, Dusseldorf ]
+            description: Город, в котором расположено предложение

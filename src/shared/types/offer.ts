@@ -1,19 +1,12 @@
-import { Ref } from '@typegoose/typegoose';
-
-import { City, Location } from './index.js';
+import { City, Location, User } from './index.js';
 import {
   Rating,
   PlaceType,
-  RoomCount,
-  GuestCount,
-  Convenience,
 } from '../enums/index.js';
-import { UserEntity } from '../libs/modules/user/index.js';
 
 export type Offer = {
+  id: string;
   title: string;
-  description: string;
-  publicationDate: Date;
   city: City;
   preview: string;
   images: string[];
@@ -21,11 +14,7 @@ export type Offer = {
   isFavorite: boolean;
   rating: Rating;
   placeType: PlaceType;
-  roomCount: RoomCount;
-  guestCount: GuestCount;
   price: number;
-  conveniences: Convenience[];
-  offerAuthor: Ref<UserEntity>;
-  commentCount: number;
+  offerAuthor: User;
   location: Location;
 };

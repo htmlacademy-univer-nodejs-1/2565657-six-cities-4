@@ -10,10 +10,10 @@ export class CitySchema {
   @prop({
     required: true,
     enum: Object.values(CityName),
-    type: String,
+    placeType: String,
   })
   public name!: CityName;
 
-  @prop({ required: true, type: LocationSchema })
+  @prop({ required: true, placeType: LocationSchema })
   public location!: LocationSchema;
 }

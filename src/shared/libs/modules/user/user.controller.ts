@@ -5,7 +5,7 @@ import { Logger } from 'pino';
 
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { LoginUserDto } from './dto/login-user.dto.js';
-import { LoggedUserRdo } from './rdo/logged-user.rdo.js';
+import { LoginUserRdo } from './rdo/login-user.rdo.js';
 import { UserRdo } from './rdo/user.rdo.js';
 import { CreateUserRequest } from './type/create-user-request.type.js';
 import { LoginUserRequest } from './type/login-user-request.type.js';
@@ -112,7 +112,7 @@ export class UserController extends BaseController {
   ): Promise<void> {
     const user = await this.authService.verify(body);
     const token = await this.authService.authenticate(user);
-    const responseData = fillDto(LoggedUserRdo, {
+    const responseData = fillDto(LoginUserRdo, {
       email: user.email,
       token,
     });
@@ -151,6 +151,6 @@ export class UserController extends BaseController {
       );
     }
 
-    this.ok(res, fillDto(LoggedUserRdo, foundedUser));
+    this.ok(res, fillDto(LoginUserRdo, foundedUser));
   }
 }
