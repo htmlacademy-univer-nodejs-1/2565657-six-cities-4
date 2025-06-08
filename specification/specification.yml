@@ -145,7 +145,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/OfferCreateRequest'
       responses:
-        '200':
+        '201':
           description: Идентификатор нового предложения успешно получен
           content:
             application/json:
@@ -337,14 +337,14 @@ paths:
               format: uuid
 
       responses:
-        '200':
+        '204':
           description: Предложение успешно удалено из избранного
         '401':
           description: Пользователь не авторизован для выполнения этого действия
         '404':
           description: Предложение с указанным идентификатором не найдено
 
-  /offers/{offerId}/comments:
+  /comments/{offerId}:
     get:
       tags:
         - comments
@@ -445,6 +445,26 @@ components:
           enum: [Common, Pro]
           description: Тип пользователя (Common или Pro)
 
+    UserGetResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+          description: Имя пользователя
+        email:
+          type: string
+          format: email
+          description: Электронная почта пользователя
+        avatarImage:
+          type: string
+          description: URL изображения аватара пользователя
+          format: uri
+        userType:
+          type: string
+          enum: [Common, Pro]
+          description: Тип пользователя (Common или Pro)
 
     UserCreateRequest:
       type: object
@@ -598,7 +618,7 @@ components:
             enum: [ Breakfast, Air conditioning, Laptop friendly workspace, Baby seat, Washer, Towels, Fridge ]
           description: Список удобств, доступных в предложении
         offerAuthor:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/UserGetResponse'
         commentsCount:
           type: integer
           description: Количество комментариев к предложению (рассчитывается автоматически)
@@ -658,7 +678,7 @@ components:
           maximum: 100000
           description: Цена за ночь проживания в предложении (от 100 до 100000)
         offerAuthor:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/UserGetResponse'
         location:
           $ref: '#/components/schemas/Location'
         
@@ -822,7 +842,7 @@ components:
           maximum: 5
           description: Оценка комментария, в диапазоне от 1 до 5
         offerAuthor:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/UserGetResponse'
           description: Информация об авторе комментария
 
     CommentCreateRequest:

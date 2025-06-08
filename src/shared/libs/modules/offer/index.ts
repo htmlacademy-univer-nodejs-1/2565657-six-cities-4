@@ -4,6 +4,4 @@ export * from './offer-service.interface.js';
 export * from './default-offer.service.js';
 export * from './offer.container.js';
 export * from './cities.js';
-export * from './dto/detailed-offer.dto.js';
-export * from './dto/offer.dto.js';
 export * from './dto/update-offer.dto.js';

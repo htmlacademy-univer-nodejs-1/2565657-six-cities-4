@@ -6,7 +6,7 @@ import { PlaceType, Rating } from '../../../../enums/index.js';
 import { UserRdo } from '../../user/rdo/user.rdo.js';
 
 export class OfferRdo {
-  @Expose()
+  @Expose({ name: 'id' })
   public id!: string;
 
   @Expose()

@@ -5,9 +5,9 @@ import { Error } from 'mongoose';
 import { Logger } from 'pino';
 
 import { ExceptionFilter } from './exception-filter.interface.js';
+import { createErrorObject } from '../../../helpers/index.js';
 import { Component } from '../../../types/index.js';
 import { HttpError } from '../errors/http-error.js';
-import { createErrorObject } from '../../../helpers/index.js';
 
 
 @injectable()

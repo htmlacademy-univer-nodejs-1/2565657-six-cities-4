@@ -6,7 +6,7 @@ import { Convenience, GuestCount, PlaceType, Rating, RoomCount } from '../../../
 import { UserRdo } from '../../user/rdo/user.rdo.js';
 
 export class DetailedOfferRdo {
-  @Expose()
+  @Expose({ name: 'id' })
   public id!: string;
 
   @Expose()

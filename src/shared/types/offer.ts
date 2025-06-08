@@ -1,11 +1,13 @@
-import { City, Location, User } from './index.js';
+import { Ref } from '@typegoose/typegoose';
+
+import { City, Location } from './index.js';
 import {
   Rating,
   PlaceType,
 } from '../enums/index.js';
+import { UserEntity } from '../libs/modules/user/index.js';
 
 export type Offer = {
-  id: string;
   title: string;
   city: City;
   preview: string;
@@ -15,6 +17,6 @@ export type Offer = {
   rating: Rating;
   placeType: PlaceType;
   price: number;
-  offerAuthor: User;
+  offerAuthor: Ref<UserEntity>;
   location: Location;
 };

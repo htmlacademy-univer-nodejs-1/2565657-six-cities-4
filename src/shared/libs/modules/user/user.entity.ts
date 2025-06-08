@@ -41,13 +41,16 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   })
   public avatarImage: string;
 
+  @prop({
+    required: true
+  })
   public password: string;
 
   @prop({
     required: true,
-    placeType: () => [String],
+    type: () => [String],
     enum: UserType,
-    default: 'обычный',
+    default: 'Common',
   })
   public userType: UserType;
 

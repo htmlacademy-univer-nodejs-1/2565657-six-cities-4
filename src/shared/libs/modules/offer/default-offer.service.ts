@@ -6,6 +6,7 @@ import { Types } from 'mongoose';
 import { OfferService, OfferEntity, CreateOfferDto, UpdateOfferDto } from './index.js';
 import { Component } from '../../../types/index.js';
 import { Logger } from '../../logger/index.js';
+import { CityName } from '../../../enums/index.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -56,7 +57,7 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
-  public async findPremiumByCity(city: string): Promise<DocumentType<OfferEntity>[]> {
+  public async findPremiumByCityName(city: CityName): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find({ city, isPremium: true })
       .sort({ postDate: -1 })
@@ -116,7 +117,7 @@ export class DefaultOfferService implements OfferService {
     return null;
   }
 
-  public async updateRating(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+  private async updateRating(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     const aggregateResult = await this.offerModel
       .aggregate([
         { $match: { _id: new Types.ObjectId(offerId) } },
@@ -130,7 +131,7 @@ export class DefaultOfferService implements OfferService {
         },
         {
           $addFields: {
-            rating: { $avg: '$comments.rating' }
+            rating: { $ifNull: [{ $avg: '$comments.rating' }, 0] },
           }
         },
         { $project: { comments: 0 } }
@@ -141,13 +142,9 @@ export class DefaultOfferService implements OfferService {
       return null;
     }
 
-    const newRating = aggregateResult[0].rating || 0;
+    const newRating = aggregateResult[0].rating;
     return this.offerModel
-      .findByIdAndUpdate(
-        offerId,
-        { rating: parseFloat(newRating.toFixed(1)) },
-        { new: true }
-      )
+      .findByIdAndUpdate(offerId, { rating: newRating }, { new: true })
       .populate('offerAuthor')
       .exec();
   }
