@@ -1,18 +1,16 @@
-import { Response} from 'express';
-import { StatusCodes } from 'http-status-codes';
+import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import { Logger } from 'pino';
 
-import { CommentService } from './comment-service.interface.js';
 import { OfferService } from '../offer/index.js';
-import { CreateCommentDto } from './dto/create-comment.dto.js';
-import { CommentRdo } from './rdo/comment.rdo.js';
-import { CreateCommentRequest } from './type/create-comment-request.type.js';
+import { CreateCommentDto } from './dto/index.js';
+import { CommentService , CommentRdo } from './index.js';
 import { fillDto } from '../../../helpers/index.js';
 import { Component } from '../../../types/index.js';
-import { BaseController, HttpError, HttpMethod } from '../../rest/index.js';
-import { PrivateRouteMiddleware } from '../../rest/middleware/private-route.middleware.js';
-import { ValidateDtoMiddleware } from '../../rest/middleware/validate-dto.middleware.js';
+import { BaseController } from '../../rest/controller/index.js';
+import { DocumentExistsMiddleware , PrivateRouteMiddleware , ValidateDtoMiddleware , ValidateObjectIdMiddleware } from '../../rest/middleware/index.js';
+import { HttpMethod } from '../../rest/types/index.js';
+import { ParamOfferId } from '../offer/type/index.js';
 
 @injectable()
 export class CommentController extends BaseController {
@@ -25,31 +23,41 @@ export class CommentController extends BaseController {
 
     this.logger.info('Register routes for CommentController…');
     this.addRoute({
-      path: '/',
+      path: '/:offerId',
+      method: HttpMethod.Get,
+      handler: this.getComments,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId',
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateDtoMiddleware(CreateCommentDto)
+        new ValidateDtoMiddleware(CreateCommentDto),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
   }
 
+  public async getComments({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    const comments = await this.commentService.findByOfferId(params.offerId);
+
+    this.ok(res, fillDto(CommentRdo, comments));
+  }
+
   public async create(
-    { body, tokenPayload }: CreateCommentRequest,
+    { body, params }: Request<ParamOfferId, unknown, CreateCommentDto>,
     res: Response
   ): Promise<void> {
+    const comment = await this.commentService.create({ ...body, offerId: params.offerId});
+    await this.offerService.incCommentCount(params.offerId);
 
-    if (! await this.offerService.exists(body.offerId)) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer with id ${body.offerId} not found.`,
-        'CommentController'
-      );
-    }
-
-    const comment = await this.commentService.create({ ...body, authorId: tokenPayload.id });
-    await this.offerService.incCommentCount(body.offerId);
     this.created(res, fillDto(CommentRdo, comment));
   }
 }

@@ -3,13 +3,10 @@ import { inject, injectable } from 'inversify';
 import { SignJWT } from 'jose';
 import { Logger } from 'pino';
 
-import { AuthService } from './auth-service.interface.js';
-import { JWT_ALGORITHM, JWT_EXPIRED } from './auth.constants.js';
-import { LoginUserDto } from '../user/dto/login-user.dto.js';
+import { LoginUserDto } from '../user/dto/index.js';
 import { UserEntity, UserService } from '../user/index.js';
-import { UserNotFoundException } from './errors/user-not-found.exception.js';
-import { UserPasswordIncorrectException } from './errors/user-password-incorrect.exception.js';
-import { TokenPayload } from './type/token-payload.js';
+import { UserNotFoundException , UserPasswordIncorrectException } from './errors/index.js';
+import { JWT_ALGORITHM, JWT_EXPIRED , AuthService , TokenPayload } from './index.js';
 import { Component } from '../../../types/index.js';
 import { RestSchema } from '../../config/index.js';
 import * as crypto from 'node:crypto';
@@ -34,7 +31,7 @@ export class DefaultAuthService implements AuthService {
       userType: user.userType
     };
 
-    this.logger.info(`Create token for ${user.email}`);
+    this.logger.info(`Создан токен для ${user.email}`);
     return new SignJWT(tokenPayload)
       .setProtectedHeader({ alg: JWT_ALGORITHM })
       .setIssuedAt()
@@ -45,12 +42,12 @@ export class DefaultAuthService implements AuthService {
   public async verify(dto: LoginUserDto): Promise<UserEntity> {
     const user = await this.userService.findByEmail(dto.email);
     if (! user) {
-      this.logger.warn(`User with ${dto.email} not found`);
+      this.logger.warn(`Пользователь с таким email не найден: ${dto.email}`);
       throw new UserNotFoundException();
     }
 
     if (! user.verifyPassword(dto.password, this.config.get('SALT'))) {
-      this.logger.warn(`Incorrect password for ${dto.email}`);
+      this.logger.warn(`Неправильный пароль от ${dto.email}`);
       throw new UserPasswordIncorrectException();
     }
 

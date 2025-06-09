@@ -1,4 +1,4 @@
-import { Location } from './location.js';
+import { Location } from './index.js';
 import { CityName } from '../enums/index.js';
 
 export type City = {

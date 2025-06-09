@@ -1,10 +1,8 @@
 import { Container } from 'inversify';
 
-import { AuthService } from './auth-service.interface.js';
-import { AuthExceptionFilter } from './auth.exception-filter.js';
-import { DefaultAuthService } from './default-auth.service.js';
+import { AuthService , AuthExceptionFilter , DefaultAuthService } from './index.js';
 import { Component } from '../../../types/index.js';
-import { ExceptionFilter } from '../../rest/index.js';
+import { ExceptionFilter } from '../../rest/exception-filter/index.js';
 
 export function createAuthContainer() {
   const authContainer = new Container();

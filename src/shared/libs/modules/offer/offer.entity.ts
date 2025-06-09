@@ -3,9 +3,9 @@ import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@type
 import { CitySchema } from './city.schema.js';
 import { LocationSchema } from './location.schema.js';
 import { Convenience, PlaceType } from '../../../enums/index.js';
-import { Location, Offer } from '../../../types/index.js';
-import { CommentEntity } from '../comment/index.js';
+import { DetailedOffer, Location } from '../../../types/index.js';
 import { UserEntity } from '../user/index.js';
+
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}
@@ -32,7 +32,7 @@ export interface OfferEntity extends defaultClasses.Base {}
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
+export class OfferEntity extends defaultClasses.TimeStamps implements DetailedOffer {
   @prop({
     required: true,
     minlength: 10,
@@ -63,7 +63,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
 
   @prop({
     required: true,
-    match: [/\.(jpg|png)$/i, 'Автарка должна быть в формате JPEG или PNG']
+    match: [/\.(jpg|png)$/i, 'Аватарка должна быть в формате JPEG или PNG']
   })
   public preview!: string;
 
@@ -90,7 +90,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
   @prop({
     required: true,
     type: () => [String],
-    enum: PlaceType,
+    enum: Object.values(PlaceType),
   })
   public placeType!: PlaceType;
 
@@ -147,14 +147,6 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer{
     }
   })
   public location!: LocationSchema;
-
-  @prop({
-    ref: 'CommentEntity',
-    foreignField: 'offerId',
-    localField: '_id',
-    justOne: false
-  })
-  public comments?: Ref<CommentEntity>[];
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

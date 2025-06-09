@@ -1,4 +1,4 @@
-import { FileWriter } from './file-writer.interface.js';
+import { FileWriter } from './index.js';
 import { WriteStream , createWriteStream } from 'node:fs';
 
 export class TSVFileWriter implements FileWriter {

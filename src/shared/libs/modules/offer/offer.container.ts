@@ -6,10 +6,9 @@ import {
   OfferModel,
   OfferService,
   DefaultOfferService
-} from './index.js';
-import { OfferController } from './offer.controller.js';
+  , OfferController } from './index.js';
 import { Component } from '../../../types/index.js';
-import { Controller } from '../../rest/index.js';
+import { Controller } from '../../rest/controller/index.js';
 
 
 export function createOfferContainer() {

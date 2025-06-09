@@ -1,4 +1,9 @@
-import { ClassConstructor, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
+import type { ClassConstructor } from 'class-transformer';
+import { ValidationError } from 'class-validator';
+
+import { ApplicationError } from '../enums/index.js';
+import { ValidationErrorField } from '../libs/rest/errors/index.js';
 
 export function generateRandomValue(
   min: number,
@@ -39,8 +44,14 @@ export function fillDto<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
   return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });
 }
 
-export function createErrorObject(message: string) {
-  return {
-    error: message
-  };
+export function createErrorObject(errorType: ApplicationError, error: string, details: ValidationErrorField[] = []) {
+  return { errorType, error, details };
+}
+
+export function reduceValidationErrors(errors: ValidationError[]): ValidationErrorField[] {
+  return errors.map(({ property, value, constraints}) => ({
+    property,
+    value,
+    messages: constraints ? Object.values(constraints) : []
+  }));
 }

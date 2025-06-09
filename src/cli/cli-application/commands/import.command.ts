@@ -1,16 +1,16 @@
 import { inject, injectable } from 'inversify';
 
-import { DEFAULT_DB_PORT } from './command.constants.js';
-import { Command } from './command.interface.js';
+import { Command, DEFAULT_DB_PORT } from './index.js';
 import {
-  generateOffer, generateUser,
+  generateDetailedOffer, generateUser,
   getErrorMessage, getMongoURI
 } from '../../../shared/helpers/index.js';
 import { Database } from '../../../shared/libs/database/index.js';
 import { TSVFileReader } from '../../../shared/libs/file-reader/index.js';
 import { OfferService } from '../../../shared/libs/modules/offer/index.js';
 import { UserService } from '../../../shared/libs/modules/user/index.js';
-import { Component, Offer, User } from '../../../shared/types/index.js';
+import { DetailedOffer , Component, User } from '../../../shared/types/index.js';
+
 
 @injectable()
 export class ImportCommand implements Command {
@@ -58,7 +58,7 @@ export class ImportCommand implements Command {
 
     const offerAuthorId = savedUser.id;
 
-    const offer = generateOffer(
+    const detailedOffer = generateDetailedOffer(
       title,
       description,
       postDate,
@@ -80,7 +80,7 @@ export class ImportCommand implements Command {
       latitude,
       longitude,
     );
-    await this.saveOffer(offer);
+    await this.saveOffer(detailedOffer);
     resolve();
   }
 
@@ -104,11 +104,10 @@ export class ImportCommand implements Command {
     }, this.salt);
   }
 
-  private async saveOffer(offer: Offer) {
+  private async saveOffer(offer: DetailedOffer) {
     await this.offerService.create({
       title: offer.title,
       description: offer.description,
-      publicationDate: offer.publicationDate,
       city: offer.city,
       preview: offer.preview,
       images: offer.images,
@@ -118,8 +117,8 @@ export class ImportCommand implements Command {
       guestCount: offer.guestCount,
       price: offer.price,
       conveniences: offer.conveniences,
-      offerAuthor: offer.offerAuthor,
       location: offer.location,
+      offerAuthor: offer.offerAuthor
     });
   }
 

@@ -4,8 +4,8 @@ import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 import { Logger } from 'pino';
 
-import { Controller } from './controller.interface.js';
-import { Route } from '../index.js';
+import { Controller } from './index.js';
+import { Route } from '../types/index.js';
 
 const DEFAULT_CONTENT_TYPE = 'application/json';
 

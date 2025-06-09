@@ -3,20 +3,18 @@ import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import { Logger } from 'pino';
 
-import { CreateUserDto } from './dto/create-user.dto.js';
-import { LoginUserDto } from './dto/login-user.dto.js';
-import { LoggedUserRdo } from './rdo/logged-user.rdo.js';
-import { UserRdo } from './rdo/user.rdo.js';
-import { CreateUserRequest } from './type/create-user-request.type.js';
-import { LoginUserRequest } from './type/login-user-request.type.js';
-import { ShowUserRequest } from './type/show-user-request.type.js';
-import { UserService } from './user-service.interface.js';
+import { CreateUserDto , LoginUserDto } from './dto/index.js';
+import { UserService } from './index.js';
+import { LoginUserRdo } from './rdo/index.js';
+import { CreateUserRequest , LoginUserRequest } from './type/index.js';
 import { fillDto } from '../../../helpers/index.js';
 import { Component } from '../../../types/index.js';
 import { Config, RestSchema } from '../../config/index.js';
-import { BaseController, HttpError, HttpMethod } from '../../rest/index.js';
-import { ValidateDtoMiddleware } from '../../rest/middleware/validate-dto.middleware.js';
-import { AuthService } from '../auth/auth-service.interface.js';
+import { BaseController } from '../../rest/controller/index.js';
+import { HttpError } from '../../rest/errors/index.js';
+import { PrivateRouteMiddleware , ValidateDtoMiddleware } from '../../rest/middleware/index.js';
+import { HttpMethod } from '../../rest/types/index.js';
+import { AuthService } from '../auth/index.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -32,59 +30,36 @@ export class UserController extends BaseController {
 
     this.salt = this.config.get('SALT');
 
-    this.logger.info('Регистрирация маршрутов для контроллера пользователей');
+    this.logger.info('Регистрация маршрутов для контроллера пользователей');
 
-    this.addRoute({
-      path: '/',
-      method: HttpMethod.Get,
-      handler: this.index
-    });
     this.addRoute({
       path: '/create',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateUserDto)]
+      middlewares: [
+        new ValidateDtoMiddleware(CreateUserDto)
+      ]
     });
     this.addRoute({
       path: '/login',
       method: HttpMethod.Post,
       handler: this.login,
-      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
+      middlewares: [
+        new ValidateDtoMiddleware(LoginUserDto)
+      ]
     });
     this.addRoute({
       path: '/logout',
       method: HttpMethod.Post,
       handler: this.logout,
-      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
+      middlewares: [new PrivateRouteMiddleware()]
     });
     this.addRoute({
-      path: '/:userId',
+      path: '/check',
       method: HttpMethod.Get,
-      handler: this.show
+      handler: this.check,
+      middlewares: [new PrivateRouteMiddleware()]
     });
-    this.addRoute({
-      path: '/login',
-      method: HttpMethod.Get,
-      handler: this.checkAuthenticate,
-    });
-
-    // this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    // this.addRoute({ path: '/show', method: HttpMethod.Get, handler: this.show });
-    // this.addRoute({ path: '/create', method: HttpMethod.Post, handler: this.create });
-    // this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
-    // this.addRoute({ path: '/logout', method: HttpMethod.Post, handler: this.logout });
-  }
-
-  public async index(_req: Request, res: Response) {
-    const users = await this.userService.find();
-    const responseData = fillDto(UserRdo, users);
-    this.ok(res, responseData);
-  }
-
-  public async show(req: ShowUserRequest, res: Response) {
-    const user = await this.userService.findByEmail(req.body.email);
-    const responseData = fillDto(UserRdo, user);
-    this.ok(res, responseData);
   }
 
   public async create(
@@ -92,18 +67,18 @@ export class UserController extends BaseController {
     res: Response,
     _next: NextFunction
   ): Promise<void> {
-    const existedUser = await this.userService.findByEmail(req.body.email);
+    const existsUser = await this.userService.findByEmail(req.body.email);
 
-    if (existedUser) {
+    if (existsUser) {
       throw new HttpError(
         StatusCodes.CONFLICT,
-        `Пользователь с таким email уже существует: ${req.body.email}`,
+        `User with email «${req.body.email}» exists.`,
         'UserController'
       );
     }
 
-    const result = await this.userService.create(req.body, this.salt);
-    this.created(res, fillDto(UserRdo, result));
+    await this.userService.create(req.body, this.salt);
+    this.created(res, {});
   }
 
   public async login(
@@ -112,7 +87,8 @@ export class UserController extends BaseController {
   ): Promise<void> {
     const user = await this.authService.verify(body);
     const token = await this.authService.authenticate(user);
-    const responseData = fillDto(LoggedUserRdo, {
+    const responseData = fillDto(LoginUserRdo, {
+      name: user.name,
       email: user.email,
       token,
     });
@@ -120,27 +96,9 @@ export class UserController extends BaseController {
   }
 
   public async logout(
-    req: LoginUserRequest,
-    _res: Response
+    { tokenPayload: { email }}: Request,
+    res: Response
   ): Promise<void> {
-    const existedUser = await this.userService.findByEmail(req.body.email);
-
-    if (!existedUser) {
-      throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        `Пользователь с таким email не найден: ${req.body.email}`,
-        'UserController'
-      );
-    }
-
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Не реализовано',
-      'UserController'
-    );
-  }
-
-  public async checkAuthenticate({ tokenPayload: { email }}: Request, res: Response) {
     const foundedUser = await this.userService.findByEmail(email);
 
     if (! foundedUser) {
@@ -151,6 +109,20 @@ export class UserController extends BaseController {
       );
     }
 
-    this.ok(res, fillDto(LoggedUserRdo, foundedUser));
+    this.noContent(res, {});
+  }
+
+  public async check({ tokenPayload: { email }}: Request, res: Response) {
+    const foundedUser = await this.userService.findByEmail(email);
+
+    if (! foundedUser) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController'
+      );
+    }
+
+    this.ok(res, fillDto(LoginUserRdo, foundedUser));
   }
 }

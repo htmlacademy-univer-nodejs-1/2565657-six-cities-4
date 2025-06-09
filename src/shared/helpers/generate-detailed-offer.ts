@@ -4,10 +4,10 @@ import { Types } from 'mongoose';
 import { generateCity } from './index.js';
 import { PlaceType , Convenience , Rating , RoomCount , GuestCount } from '../enums/index.js';
 import { UserEntity } from '../libs/modules/user/index.js';
-import { Location , Offer } from '../types/index.js';
+import { DetailedOffer , Location } from '../types/index.js';
 
 
-export function generateOffer(
+export function generateDetailedOffer(
   title: string,
   description: string,
   postDate: string,
@@ -28,7 +28,7 @@ export function generateOffer(
   commentsCount: string,
   latitude: string,
   longitude: string,
-): Offer {
+): DetailedOffer {
   const city = generateCity(cityName, cityLatitude, cityLongitude);
 
   const offerAuthor: Ref<UserEntity> = new Types.ObjectId(offerAuthorId) as Ref<UserEntity>;

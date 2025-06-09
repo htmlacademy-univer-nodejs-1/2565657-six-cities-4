@@ -1,4 +1,4 @@
-import { LoginUserDto } from '../user/dto/login-user.dto.js';
+import { LoginUserDto } from '../user/dto/index.js';
 import { UserEntity } from '../user/index.js';
 
 export interface AuthService {
