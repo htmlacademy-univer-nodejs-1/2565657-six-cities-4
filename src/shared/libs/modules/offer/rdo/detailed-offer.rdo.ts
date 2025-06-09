@@ -1,9 +1,8 @@
 import { Expose, Type } from 'class-transformer';
 
-import { CityRdo } from './city.rdo.js';
-import { LocationRdo } from './location.rdo.js';
+import { CityRdo , LocationRdo } from './index.js';
 import { Convenience, GuestCount, PlaceType, Rating, RoomCount } from '../../../../enums/index.js';
-import { UserRdo } from '../../user/rdo/user.rdo.js';
+import { UserRdo } from '../../user/rdo/index.js';
 
 export class DetailedOfferRdo {
   @Expose({ name: 'id' })

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 
-import { DataGenerator } from './offer-generator.interface.js';
+import { DataGenerator } from './index.js';
+import { MockServerData } from '../../../cli/mocks/index.js';
 import {
   generateRandomCoordinate,
   generateRandomValue,
@@ -8,7 +9,6 @@ import {
   getRandomItem,
   getRandomItems,
 } from '../../helpers/index.js';
-import { MockServerData } from '../../types/index.js';
 
 const MIN_COORDINATE = 60.0;
 const MAX_COORDINATE = 80.0;
@@ -22,7 +22,7 @@ const MAX_PRICE = 2000;
 const FIRST_WEEK_DAY = 1;
 const LAST_WEEK_DAY = 7;
 
-export class TSVDataGenerator implements DataGenerator {
+export class TsvDataGenerator implements DataGenerator {
   constructor(private readonly mockData: MockServerData) {}
 
   public generate(): string {

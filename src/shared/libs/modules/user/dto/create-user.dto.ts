@@ -3,6 +3,7 @@ import { IsEmail, IsString, Length } from 'class-validator';
 import { CreateUserMessages } from './create-user.messages.js';
 import { UserType } from '../../../../enums/index.js';
 
+
 export class CreateUserDto {
   @IsString({ message: CreateUserMessages.name.invalidFormat })
   @Length(1, 15, { message: CreateUserMessages.name.lengthField })

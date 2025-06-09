@@ -1,8 +1,10 @@
+import { Ref } from '@typegoose/typegoose';
 import { IsInt, Max, MaxLength, Min, MinLength } from 'class-validator';
 
-import { CreateOfferValidationMessage } from './create-offer-messages.js';
+import { CreateOfferValidationMessage } from './index.js';
 import { Convenience, GuestCount, PlaceType, RoomCount } from '../../../../enums/index.js';
 import { City, Location } from '../../../../types/index.js';
+import { UserEntity } from '../../user/index.js';
 
 export class CreateOfferDto {
   @MinLength(10, { message: CreateOfferValidationMessage.title.minLength })
@@ -28,6 +30,8 @@ export class CreateOfferDto {
   @Min(100, { message: CreateOfferValidationMessage.price.minValue })
   @Max(100000, { message: CreateOfferValidationMessage.price.maxValue })
   public price!: number;
+
+  public offerAuthor: Ref<UserEntity>;
 
   public conveniences!: Convenience[];
   public location!: Location;

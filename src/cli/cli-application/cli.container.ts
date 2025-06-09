@@ -1,7 +1,7 @@
 import { Container } from 'inversify';
 
-import { Command } from './commands/command.interface.js';
-import { CLIApplication, GenerateCommand, HelpCommand, ImportCommand, VersionCommand } from './index.js';
+import { Command, GenerateCommand, HelpCommand, ImportCommand, VersionCommand } from './commands/index.js';
+import { CLIApplication } from './index.js';
 import { Database, MongoDatabase } from '../../shared/libs/database/index.js';
 import { ConsoleLogger, Logger, PinoLogger } from '../../shared/libs/logger/index.js';
 import { Component } from '../../shared/types/index.js';

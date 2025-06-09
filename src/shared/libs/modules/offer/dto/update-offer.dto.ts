@@ -1,6 +1,6 @@
 import { IsInt, Max, MaxLength, Min, MinLength } from 'class-validator';
 
-import { UpdateOfferMessage } from './update-offer-messages.js';
+import { UpdateOfferMessage } from './index.js';
 import { Convenience, GuestCount, PlaceType, RoomCount } from '../../../../enums/index.js';
 import { City, Location } from '../../../../types/index.js';
 

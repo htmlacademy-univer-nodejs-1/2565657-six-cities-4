@@ -1,10 +1,10 @@
 import got from 'got';
 import { injectable } from 'inversify';
 
-import { Command } from './command.interface.js';
+import { Command, DEFAULT_RADIX } from './index.js';
 import { TSVFileWriter } from '../../../shared/libs/file-writer/index.js';
-import { TSVDataGenerator } from '../../../shared/libs/offer-generator/index.js';
-import { MockServerData } from '../../../shared/types/index.js';
+import { TsvDataGenerator } from '../../../shared/libs/offer-generator/index.js';
+import { MockServerData } from '../../mocks/index.js';
 
 @injectable()
 export class GenerateCommand implements Command {
@@ -18,12 +18,12 @@ export class GenerateCommand implements Command {
     try {
       this.initialData = await got.get(url).json();
     } catch {
-      throw new Error(`Невозможно загрузитль данные из ${url}`);
+      throw new Error(`Невозможно загрузить данные из ${url}`);
     }
   }
 
   private async write(filepath: string, offerCount: number) {
-    const tsvOfferGenerator = new TSVDataGenerator(this.initialData);
+    const tsvOfferGenerator = new TsvDataGenerator(this.initialData);
     const tsvFileWriter = new TSVFileWriter(filepath);
 
     for (let i = 0; i < offerCount; i++) {
@@ -33,7 +33,7 @@ export class GenerateCommand implements Command {
 
   public async execute(...parameters: string[]): Promise<void> {
     const [count, filepath, url] = parameters;
-    const offerCount = Number.parseInt(count, 10);
+    const offerCount = Number.parseInt(count, DEFAULT_RADIX);
 
     try {
       await this.load(url);

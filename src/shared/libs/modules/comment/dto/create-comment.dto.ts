@@ -1,6 +1,6 @@
 import { IsInt, IsString, Length, Max, Min } from 'class-validator';
 
-import { CreateCommentMessages } from './create-comment.messages.js';
+import { CreateCommentMessages } from './index.js';
 import { Rating } from '../../../../enums/index.js';
 
 export class CreateCommentDto {
@@ -12,4 +12,7 @@ export class CreateCommentDto {
   @Min(1, { message: CreateCommentMessages.rating.minValue })
   @Max(5, { message: CreateCommentMessages.rating.maxValue })
   public rating!: Rating;
+
+  authorId: string;
+  offerId?: string;
 }

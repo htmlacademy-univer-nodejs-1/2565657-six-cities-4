@@ -2,18 +2,15 @@ import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import { Logger } from 'pino';
 
-import { CommentService } from './comment-service.interface.js';
 import { OfferService } from '../offer/index.js';
-import { CreateCommentDto } from './dto/create-comment.dto.js';
-import { CommentRdo } from './rdo/comment.rdo.js';
+import { CreateCommentDto } from './dto/index.js';
+import { CommentService , CommentRdo } from './index.js';
 import { fillDto } from '../../../helpers/index.js';
 import { Component } from '../../../types/index.js';
-import { BaseController, HttpMethod } from '../../rest/index.js';
-import { DocumentExistsMiddleware } from '../../rest/middleware/document-exists.middleware.js';
-import { PrivateRouteMiddleware } from '../../rest/middleware/private-route.middleware.js';
-import { ValidateDtoMiddleware } from '../../rest/middleware/validate-dto.middleware.js';
-import { ValidateObjectIdMiddleware } from '../../rest/middleware/validate-objectid.middleware.js';
-import { ParamOfferId } from '../offer/type/param-offerid.type.js';
+import { BaseController } from '../../rest/controller/index.js';
+import { DocumentExistsMiddleware , PrivateRouteMiddleware , ValidateDtoMiddleware , ValidateObjectIdMiddleware } from '../../rest/middleware/index.js';
+import { HttpMethod } from '../../rest/types/index.js';
+import { ParamOfferId } from '../offer/type/index.js';
 
 @injectable()
 export class CommentController extends BaseController {
@@ -31,7 +28,6 @@ export class CommentController extends BaseController {
       handler: this.getComments,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateDtoMiddleware(CreateCommentDto),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
@@ -59,7 +55,7 @@ export class CommentController extends BaseController {
     { body, params }: Request<ParamOfferId, unknown, CreateCommentDto>,
     res: Response
   ): Promise<void> {
-    const comment = await this.commentService.create({ ...body});
+    const comment = await this.commentService.create({ ...body, offerId: params.offerId});
     await this.offerService.incCommentCount(params.offerId);
 
     this.created(res, fillDto(CommentRdo, comment));

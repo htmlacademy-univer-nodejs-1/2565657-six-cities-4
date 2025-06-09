@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 
-import { CommandParser } from './command-parser.js';
-import { Command } from './commands/command.interface.js';
+import { Command } from './commands/index.js';
+import { CommandParser } from './index.js';
 import { Component } from '../../shared/types/index.js';
 
 type CommandCollection = Record<string, Command>;

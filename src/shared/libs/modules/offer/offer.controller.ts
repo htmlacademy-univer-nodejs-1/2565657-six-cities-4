@@ -2,21 +2,22 @@ import { Response, Request } from 'express';
 import { inject, injectable } from 'inversify';
 import { Logger } from 'pino';
 
-import { CreateOfferDto } from './dto/create-offer.dto.js';
-import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { OfferService } from './offer-service.interface.js';
-import { OfferRdo } from './rdo/offer.rdo.js';
-import { CreateOfferRequest } from './type/create-offer-request.type.js';
-import { ParamOfferId } from './type/param-offerid.type.js';
+import { CreateOfferDto , UpdateOfferDto } from './dto/index.js';
+import { OfferService } from './index.js';
+import { OfferRdo } from './rdo/index.js';
+import { CreateOfferRequest, GetPremiumRequest, ParamOfferId } from './type/index.js';
 import { DetailedOfferDto } from '../../../../../dist/shared/libs/modules/offer/index.js';
-import { CityName } from '../../../enums/index.js';
 import { fillDto } from '../../../helpers/index.js';
 import { Component } from '../../../types/index.js';
-import { BaseController, HttpMethod } from '../../rest/index.js';
-import { DocumentExistsMiddleware } from '../../rest/middleware/document-exists.middleware.js';
-import { PrivateRouteMiddleware } from '../../rest/middleware/private-route.middleware.js';
-import { ValidateDtoMiddleware } from '../../rest/middleware/validate-dto.middleware.js';
-import { ValidateObjectIdMiddleware } from '../../rest/middleware/validate-objectid.middleware.js';
+import { BaseController } from '../../rest/controller/index.js';
+import { ValidationError } from '../../rest/errors/index.js';
+import {
+  DocumentExistsMiddleware,
+  PrivateRouteMiddleware,
+  ValidateDtoMiddleware,
+  ValidateObjectIdMiddleware
+} from '../../rest/middleware/index.js';
+import { HttpMethod } from '../../rest/types/index.js';
 import { CommentService } from '../comment/index.js';
 
 @injectable()
@@ -43,6 +44,22 @@ export class OfferController extends BaseController {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateOfferDto)
+      ]
+    });
+
+    this.addRoute({
+      path: '/premium',
+      method: HttpMethod.Get,
+      handler: this.getPremium,
+    });
+
+    this.addRoute({
+      path: '/favorite',
+      method: HttpMethod.Get,
+      handler: this.getFavorite,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new DocumentExistsMiddleware(this.offerService, 'DetailedOffer', 'offerId')
       ]
     });
 
@@ -75,25 +92,6 @@ export class OfferController extends BaseController {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.offerService, 'DetailedOffer', 'offerId')
-      ]
-    });
-
-    this.addRoute({
-      path: '/premium',
-      method: HttpMethod.Get,
-      handler: this.getPremium,
-      middlewares: [
-        new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.offerService, 'DetailedOffer', 'offerId')
-      ]
-    });
-    this.addRoute({
-      path: '/favorite',
-      method: HttpMethod.Get,
-      handler: this.getFavorite,
-      middlewares: [
-        new PrivateRouteMiddleware(),
         new DocumentExistsMiddleware(this.offerService, 'DetailedOffer', 'offerId')
       ]
     });
@@ -156,8 +154,20 @@ export class OfferController extends BaseController {
     this.ok(res, fillDto(DetailedOfferDto, updatedDetailedOffer));
   }
 
-  public async getPremium(req: Request, res: Response): Promise<void> {
-    const cityName = req.query.city as CityName;
+  public async getPremium({ query } : GetPremiumRequest, res: Response): Promise<void> {
+    const { cityName } = query;
+
+    if (!cityName) {
+      throw new ValidationError(
+        'Отсутствует cityName в query запроса',
+        [{
+          property: 'cityName',
+          value: '',
+          messages: ['отсутствует значение']
+        }]
+      );
+    }
+
     const premiumOffers = await this.offerService.findPremiumByCityName(cityName);
 
     this.ok(res, fillDto(OfferRdo, premiumOffers));

@@ -1,9 +1,10 @@
 import chalk from 'chalk';
 import { injectable } from 'inversify';
 
-import { Command } from './command.interface.js';
+import { Command, DEFAULT_ENCODING } from './index.js';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+
 
 type PackageJSONConfig = {
   version: string;
@@ -25,7 +26,7 @@ export class VersionCommand implements Command {
   constructor() {}
 
   private readVersion(): string {
-    const jsonContent = readFileSync(resolve(this.filePath), 'utf-8');
+    const jsonContent = readFileSync(resolve(this.filePath), DEFAULT_ENCODING);
     const importedContent: unknown = JSON.parse(jsonContent);
 
     if (!isPackageJSONConfig(importedContent)) {

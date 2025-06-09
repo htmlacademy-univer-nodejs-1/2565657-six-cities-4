@@ -59,7 +59,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserLoginResponse'
-                 
+
         '400':
           description: Ошибка из-за неверных данных
         '401':
@@ -73,7 +73,7 @@ paths:
       description: Завершение текущего сеанса пользователя
       operationId: logoutUser
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       responses:
         '204':
           description: Успешное завершение сеанса
@@ -88,18 +88,15 @@ paths:
       description: Определение статуса авторизации пользователя
       operationId: checkUser
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       responses:
         '200':
           description: Пользователь успешно авторизован
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                    description: Токен, необходимый для доступа к защищённым ресурсам
+                $ref: '#/components/schemas/UserLoginResponse'
+
         '401':
           description: Пользователь не авторизован
 
@@ -525,7 +522,7 @@ components:
         email:
           type: string
           format: email
-          description: Email пользователя, если нужен для отображения  
+          description: Email пользователя, если нужен для отображения
 
     DetailedOffer:
       type: object
@@ -533,7 +530,7 @@ components:
         - id
         - title
         - description
-        - publicationDate  
+        - publicationDate
         - preview
         - images
         - isPremium
@@ -629,7 +626,7 @@ components:
       type: object
       required:
         - id
-        - title 
+        - title
         - city
         - preview
         - isPremium
@@ -681,7 +678,7 @@ components:
           $ref: '#/components/schemas/UserGetResponse'
         location:
           $ref: '#/components/schemas/Location'
-        
+
     OfferCreateRequest:
       type: object
       required:
@@ -696,6 +693,7 @@ components:
         - guestCount
         - price
         - conveniences
+        - offerAuthor
         - location
       properties:
         title:
@@ -745,6 +743,9 @@ components:
           minimum: 100
           maximum: 100000
           description: Цена за ночь проживания в предложении (от 100 до 100000)
+        offerAuthor:
+          type: string
+          description: идентификатор пользователя, создающего оффер
         conveniences:
           type: array
           items:
@@ -885,7 +886,7 @@ components:
       properties:
         location:
             $ref: '#/components/schemas/Location'
-        cityName:         
+        cityName:
             type: string
             enum: [ Paris, Cologne, Brussels, Amsterdam, Hamburg, Dusseldorf ]
             description: Город, в котором расположено предложение

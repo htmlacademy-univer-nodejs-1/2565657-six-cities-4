@@ -3,9 +3,9 @@ import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@type
 import { CitySchema } from './city.schema.js';
 import { LocationSchema } from './location.schema.js';
 import { Convenience, PlaceType } from '../../../enums/index.js';
-import { DetailedOffer } from '../../../types/detailed-offer.js';
-import { Location } from '../../../types/index.js';
+import { DetailedOffer, Location } from '../../../types/index.js';
 import { UserEntity } from '../user/index.js';
+
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}

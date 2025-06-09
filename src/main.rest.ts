@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 
 import { createRestApplicationContainer, RestApplication } from './rest/index.js';
-import { createAuthContainer } from './shared/libs/modules/auth/auth.container.js';
+import { createAuthContainer } from './shared/libs/modules/auth/index.js';
 import { createCommentContainer } from './shared/libs/modules/comment/index.js';
 import { createOfferContainer } from './shared/libs/modules/offer/index.js';
 import { createUserContainer } from './shared/libs/modules/user/index.js';

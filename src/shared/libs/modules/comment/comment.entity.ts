@@ -1,6 +1,5 @@
 import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose';
 
-import { Rating } from '../../../enums/rating.js';
 import { Comment } from '../../../types/index.js';
 import { OfferEntity } from '../offer/index.js';
 import { UserEntity } from '../user/index.js';
@@ -42,10 +41,10 @@ export class CommentEntity extends defaultClasses.TimeStamps implements Comment 
 
   @prop({
     required: true,
-    type: Number,
-    enum: Object.values(Rating)
+    min: 1,
+    max: 5
   })
-  public rating: Rating;
+  public rating: number;
 }
 
 export const CommentModel = getModelForClass(CommentEntity);

@@ -1,0 +1,17 @@
+POST http://localhost:6000/comments/684667163f30d663cf63b020 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiVmFzeWEiLCJlbWFpbCI6InZhc3lhcHVwa2luQGdtYWlsLmNvbSIsImF2YXRhckltYWdlIjoicHVwa2luLmpwZyIsImlkIjoiNjg0NjVhZjgwNjc1OWZiZWQ5YzJmYTVhIiwidXNlclR5cGUiOlsiUHJvIl0sImlhdCI6MTc0OTQ0MTI4MiwiZXhwIjoxNzQ5NjE0MDgyfQ.sfiGprP5JUagJH34sgnIWjpM6CF5q4eiLk65cc1dCGU
+
+{
+  "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1",
+  "rating": 3,
+  "authorId": "68465af806759fbed9c2fa5a"
+}
+
+###
+
+GET http://localhost:6000/comments/684667163f30d663cf63b020 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiVmFzeWEiLCJlbWFpbCI6InZhc3lhcHVwa2luQGdtYWlsLmNvbSIsImF2YXRhckltYWdlIjoicHVwa2luLmpwZyIsImlkIjoiNjg0NjVhZjgwNjc1OWZiZWQ5YzJmYTVhIiwidXNlclR5cGUiOlsiUHJvIl0sImlhdCI6MTc0OTQ0MTI4MiwiZXhwIjoxNzQ5NjE0MDgyfQ.sfiGprP5JUagJH34sgnIWjpM6CF5q4eiLk65cc1dCGU
+Content-Type: application/json
+
+###

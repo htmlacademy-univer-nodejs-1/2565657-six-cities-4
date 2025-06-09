@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 
 import { Rating } from '../../../../enums/index.js';
-import { UserRdo } from '../../user/rdo/user.rdo.js';
+import { UserRdo } from '../../user/rdo/index.js';
 
 export class CommentRdo {
   @Expose()

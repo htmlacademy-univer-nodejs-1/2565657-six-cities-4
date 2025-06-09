@@ -3,10 +3,10 @@ import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
 import { Types } from 'mongoose';
 
-import { OfferService, OfferEntity, CreateOfferDto, UpdateOfferDto } from './index.js';
+import { CreateOfferDto, UpdateOfferDto } from './dto/index.js';
+import { OfferService, OfferEntity } from './index.js';
 import { Component } from '../../../types/index.js';
 import { Logger } from '../../logger/index.js';
-import { CityName } from '../../../enums/index.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -57,9 +57,9 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
-  public async findPremiumByCityName(city: CityName): Promise<DocumentType<OfferEntity>[]> {
+  public async findPremiumByCityName(city: string): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find({ city, isPremium: true })
+      .find({ 'city.name': city, isPremium: true }) // <-- Здесь изменение!
       .sort({ postDate: -1 })
       .limit(3)
       .populate('offerAuthor')
@@ -105,7 +105,7 @@ export class DefaultOfferService implements OfferService {
     const updatedOffer = await this.offerModel
       .findByIdAndUpdate(
         id,
-        { $inc: { commentsCount: 1 } },
+        { $inc: { commentCount: 1 } },
         { new: true }
       )
       .exec();

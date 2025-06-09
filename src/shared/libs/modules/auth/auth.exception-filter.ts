@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import { Logger } from 'pino';
 
-import { BaseUserException } from './errors/base-user.exception.js';
+import { BaseUserException } from './errors/index.js';
 import { Component } from '../../../types/index.js';
-import { ExceptionFilter } from '../../rest/index.js';
+import { ExceptionFilter } from '../../rest/exception-filter/index.js';
 
 @injectable()
 export class AuthExceptionFilter implements ExceptionFilter {
